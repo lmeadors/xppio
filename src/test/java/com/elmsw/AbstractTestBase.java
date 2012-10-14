@@ -13,14 +13,14 @@ import java.text.MessageFormat;
 
 import static org.junit.Assert.assertEquals;
 
-public abstract class XppIOTestBase {
+public abstract class AbstractTestBase {
 
-	private static final Logger log = LoggerFactory.getLogger(XppIOTestBase.class);
+	private static final Logger log = LoggerFactory.getLogger(AbstractTestBase.class);
 
 	protected XppIO xppIO;
 	protected final XmlPullParserFactory factory;
 
-	public XppIOTestBase() {
+	public AbstractTestBase() {
 		try {
 			factory = XmlPullParserFactory.newInstance();
 		} catch (XmlPullParserException e) {

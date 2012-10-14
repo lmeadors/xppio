@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class NestedCollectionTest extends XppIOTestBase {
+public class NestedCollectionTest extends AbstractTestBase {
 
 	public static final String EXPECTED_XML = "<order><id>1</id><lineItemList><lineItem><id>1</id><orderId>1</orderId><productId>3</productId><quantity>4</quantity></lineItem><lineItem><id>2</id><orderId>1</orderId><productId>4</productId><quantity>5</quantity></lineItem><lineItem><id>3</id><orderId>1</orderId><productId>5</productId><quantity>6</quantity></lineItem></lineItemList></order>";
 

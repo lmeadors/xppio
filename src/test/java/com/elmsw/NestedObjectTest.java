@@ -11,9 +11,9 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertNotNull;
 
-public class NestedXppIOTest extends XppIOTestBase {
+public class NestedObjectTest extends AbstractTestBase {
 
-	private static final Logger log = LoggerFactory.getLogger(NestedXppIOTest.class);
+	private static final Logger log = LoggerFactory.getLogger(NestedObjectTest.class);
 
 	public static final String ACCOUNT_XML = "<account><id>123</id><name>Blah Sales</name></account>";
 	public static final String CUSTOMER_XML = "<customer><id>123</id><name>Blah Inc.</name></customer>";

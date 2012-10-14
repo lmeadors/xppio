@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class SimpleXppIOTest extends XppIOTestBase {
+public class SimpleObjectTest extends AbstractTestBase {
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {

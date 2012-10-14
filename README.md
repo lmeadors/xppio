@@ -73,3 +73,13 @@ That would create this xml:
 	</lineItemList>
 </order>
 
+Not surprisingly, this XML can be used to create an order object with a list of lineItem objects (contained in a field
+named lineItemList).
+
+The code for creating this object looks something like this:
+
+xppIO.addAlias("order", Order.class);
+xppIO.addAlias("lineItem", LineItem.class);
+xppIO.addAlias("lineItemList", ArrayList.class);
+final Order actualOrder = xppIO.toObject(xml);
+

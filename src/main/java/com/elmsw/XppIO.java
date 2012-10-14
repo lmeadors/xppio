@@ -169,6 +169,15 @@ public class XppIO {
 	}
 
 	private String getElementName(Object object) {
+		final Class objectClass = object.getClass();
+		if (aliasMap.containsValue(objectClass)) {
+			// crap, now i have to look this up
+			for (String alias : aliasMap.keySet()) {
+				if (aliasMap.get(alias).equals(objectClass)) {
+					return alias;
+				}
+			}
+		}
 		return namingStrategy.getElementName(object);
 	}
 
