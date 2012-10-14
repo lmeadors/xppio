@@ -40,44 +40,44 @@ Currently, you can create objects from xml and xml from objects.
 
 Nested objects are also supported, including lists such as this:
 
-public class Order {
-	Integer id;
-	List<LineItem> lineItemList = new LinkedList<LineItem>();
-}
+	public class Order {
+		Integer id;
+		List<LineItem> lineItemList = new LinkedList<LineItem>();
+	}
 
 That would create this xml:
 
-<order>
-	<id>1</id>
-	<lineItemList>
-		<lineItem>
-			<id>1</id>
-			<orderId>1</orderId>
-			<productId>3</productId>
-			<quantity>4</quantity>
-		</lineItem>
-		<lineItem>
-			<id>2</id>
-			<orderId>1</orderId>
-			<productId>4</productId>
-			<quantity>5</quantity>
-		</lineItem>
-		<lineItem>
-			<id>3</id>
-			<orderId>1</orderId>
-			<productId>5</productId>
-			<quantity>6</quantity>
-		</lineItem>
-	</lineItemList>
-</order>
+	<order>
+		<id>1</id>
+		<lineItemList>
+			<lineItem>
+				<id>1</id>
+				<orderId>1</orderId>
+				<productId>3</productId>
+				<quantity>4</quantity>
+			</lineItem>
+			<lineItem>
+				<id>2</id>
+				<orderId>1</orderId>
+				<productId>4</productId>
+				<quantity>5</quantity>
+			</lineItem>
+			<lineItem>
+				<id>3</id>
+				<orderId>1</orderId>
+				<productId>5</productId>
+				<quantity>6</quantity>
+			</lineItem>
+		</lineItemList>
+	</order>
 
 Not surprisingly, this XML can be used to create an order object with a list of lineItem objects (contained in a field
 named lineItemList).
 
 The code for creating this object looks something like this:
 
-xppIO.addAlias("order", Order.class);
-xppIO.addAlias("lineItem", LineItem.class);
-xppIO.addAlias("lineItemList", ArrayList.class);
-final Order actualOrder = xppIO.toObject(xml);
+	xppIO.addAlias("order", Order.class);
+	xppIO.addAlias("lineItem", LineItem.class);
+	xppIO.addAlias("lineItemList", ArrayList.class);
+	final Order actualOrder = xppIO.toObject(xml);
 
