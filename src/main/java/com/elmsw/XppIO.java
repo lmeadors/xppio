@@ -5,6 +5,9 @@ import com.elmsw.core.converters.IntegerConverter;
 import com.elmsw.core.converters.ListConverter;
 import com.elmsw.core.converters.ReflectionConverter;
 import com.elmsw.core.converters.StringConverter;
+import com.elmsw.core.exceptionhandlers.SilentFailure;
+import com.elmsw.core.namingstrategies.PropertyNameStrategy;
+import com.elmsw.core.statefactory.SimpleStateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,14 +50,30 @@ public class XppIO {
 	final private Map<Class, Converter> converterMap = new HashMap<Class, Converter>();
 	final private ExceptionHandler exceptionHandler;
 	final private NamingStrategy namingStrategy;
+	final private StateFactory stateFactory;
 
-	public XppIO(XmlPullParserFactory factory, ExceptionHandler exceptionHandler, NamingStrategy namingStrategy) {
+	public XppIO(
+			XmlPullParserFactory factory,
+			ExceptionHandler exceptionHandler,
+			NamingStrategy namingStrategy,
+			StateFactory stateFactory
+	) {
 		this.factory = factory;
 		this.exceptionHandler = exceptionHandler;
 		this.namingStrategy = namingStrategy;
+		this.stateFactory = stateFactory;
 		converterMap.put(String.class, new StringConverter());
 		converterMap.put(Integer.class, new IntegerConverter());
 		converterMap.put(List.class, new ListConverter());
+	}
+
+	public XppIO() throws XmlPullParserException {
+		this(
+				XmlPullParserFactory.newInstance(),
+				new SilentFailure(),
+				new PropertyNameStrategy(),
+				new SimpleStateFactory()
+		);
 	}
 
 	public <T> T toObject(String input) {
@@ -62,12 +81,12 @@ public class XppIO {
 		final XmlPullParser xpp;
 		try {
 			xpp = factory.newPullParser();
-		} catch (XmlPullParserException e1) {
+		} catch (XmlPullParserException e) {
 			// we don't send this to the exception handler because it's a show stopper
-			throw new RuntimeException(e1.toString(), e1);
+			throw new RuntimeException(e.toString(), e);
 		}
 
-		final State state = new State(exceptionHandler);
+		final State state = stateFactory.get(exceptionHandler);
 
 		try {
 

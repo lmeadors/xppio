@@ -7,10 +7,17 @@ This project was created because all of the existing libraries to do it suck.
 
 This one probably sucks, too...just in a way that's more palatable for me.
 
-If you want a small (16k) library with almost no dependencies (only slf - 26k) that doesn't explode when you throw extra
-xml that you don't have in your objects at it, this might work out for you.
+What's cool?
+------
+* it's tiny less than 50k including the dependency (singular - slf-api).
+* it's extensible - the main class is 106 lines of executable code, everything else can be replaced
+* it doesn't explode if your xml has extra elements
 
-For example, say this is your class:
+
+How do I use it to create xml?
+------
+
+Say this is your class:
 
 	public class Customer {
 		private Integer id;
@@ -18,7 +25,27 @@ For example, say this is your class:
 		// extra java noise here - getters and setters, etc...
 	}
 
-And you want to create an object of this type from this xml:
+Here is what you do to create XML from that:
+
+	XppIO xppIO = new XppIO();
+	Customer customer = new Customer();
+	customer.setId(123);
+	customer.setName("Blah Industries");
+	String xml = xppIO.toXml(customer));
+
+Yep. That simple.
+
+You want to create an object from that xml? Easy.
+
+	String input = "<customer><id>123</id><name>Joe's Garage</name></customer>";
+	XppIO xppIO = new XppIO();
+	xppIO.addAlias("customer", Customer.class);
+	Customer customer = xppIO.toObject(input);
+
+See the trick there? You do have to tell xppio that when it sees the <customer> element that it needs to create an
+instance of the Customer class. Acceptable for me.
+
+Now, what happens if you get the xml from someone and it has extra stuff in it? Like this:
 
 	<customer>
 		<id>123</id>
@@ -28,15 +55,17 @@ And you want to create an object of this type from this xml:
 
 You do this:
 
+	XppIO xppIO = new XppIO();
 	xppIO.addAlias("customer", Customer.class);
-	Customer actualCustomer = xppIO.toObject(input);
+	Customer customer = xppIO.toObject(input);
 
-Using something like XStream, you're going to have to add a number field to your class. Dumb.
+See how it just ignores missing fields? What happened there?
 
-Using xppio, it just ignores missing fields. If you want to to blow up in this case, you CAN make it happen by adding an
-exception handler that explodes. You choose, not me.
+By default, xppio ignores missing fields. If you want to to blow up in this case, you CAN make it happen by adding an
+exception handler that explodes. Your choice, not mine. It's open source, and it's extensible.
 
-Currently, you can create objects from xml and xml from objects.
+Nesting?
+------
 
 Nested objects are also supported, including lists such as this:
 
@@ -45,7 +74,7 @@ Nested objects are also supported, including lists such as this:
 		List<LineItem> lineItemList = new LinkedList<LineItem>();
 	}
 
-That would create this xml:
+That would create xml something like this:
 
 	<order>
 		<id>1</id>

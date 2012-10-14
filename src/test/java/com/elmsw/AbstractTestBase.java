@@ -1,6 +1,7 @@
 package com.elmsw;
 
 import com.elmsw.core.namingstrategies.PropertyNameStrategy;
+import com.elmsw.core.statefactory.SimpleStateFactory;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public abstract class AbstractTestBase {
 			}
 		};
 		final NamingStrategy namingStrategy = new PropertyNameStrategy();
-		xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+		xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 	}
 
 	public <T, S extends T> void assertPropertiesAreEqual(T expected, S actual, String... excludes) throws Exception {

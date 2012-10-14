@@ -1,6 +1,7 @@
 package com.elmsw;
 
 import com.elmsw.beans.Customer;
+import com.elmsw.core.statefactory.SimpleStateFactory;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,7 +29,7 @@ public class ExceptionTest {
 
 		final ExceptionHandler exceptionHandler = mock(ExceptionHandler.class);
 		final NamingStrategy namingStrategy = mock(NamingStrategy.class);
-		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 
 		// run test
 		assertNull(xppIO.toObject("<bomb/>"));
@@ -44,7 +45,7 @@ public class ExceptionTest {
 		when(factory.newPullParser()).thenThrow(new XmlPullParserException("test"));
 		final ExceptionHandler exceptionHandler = mock(ExceptionHandler.class);
 		final NamingStrategy namingStrategy = mock(NamingStrategy.class);
-		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 
 		// run test
 		xppIO.toObject("<bomb/>");
@@ -68,7 +69,7 @@ public class ExceptionTest {
 
 		final NamingStrategy namingStrategy = mock(NamingStrategy.class);
 
-		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 
 		// run test
 		assertNull(xppIO.toObject("<bomb/>"));
@@ -90,7 +91,7 @@ public class ExceptionTest {
 		final NamingStrategy namingStrategy = mock(NamingStrategy.class);
 		doThrow(new RuntimeException("test")).when(namingStrategy).getElementName(any(Object.class));
 
-		final XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+		final XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 
 		// run test
 		assertNull(xppIO.toXml(new Customer()));

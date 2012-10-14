@@ -3,6 +3,7 @@ package com.elmsw;
 import com.elmsw.beans.Account;
 import com.elmsw.beans.Customer;
 import org.junit.Test;
+import org.xmlpull.v1.XmlPullParserException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,9 +14,10 @@ public class SimpleOutputTest extends AbstractTestBase {
 	private static final String EXPECTED_ACCOUNT_XML_WITH_ALIAS = "<myAccount><id>234</id><name>Woot Account</name></myAccount>";
 
 	@Test
-	public void shouldCreateCustomerXml() {
+	public void shouldCreateCustomerXml() throws XmlPullParserException {
 
 		// setup test
+		XppIO xppIO = new XppIO();
 		Customer customer = new Customer();
 		customer.setId(123);
 		customer.setName("Blah Industries");
