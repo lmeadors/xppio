@@ -1,9 +1,10 @@
 package com.elmsw;
 
-import com.elmsw.core.IntegerConverter;
-import com.elmsw.core.ListConverter;
-import com.elmsw.core.ReflectionConverter;
-import com.elmsw.core.StringConverter;
+import com.elmsw.core.State;
+import com.elmsw.core.converters.IntegerConverter;
+import com.elmsw.core.converters.ListConverter;
+import com.elmsw.core.converters.ReflectionConverter;
+import com.elmsw.core.converters.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

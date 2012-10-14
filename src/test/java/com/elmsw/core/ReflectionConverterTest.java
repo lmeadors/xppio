@@ -1,6 +1,7 @@
 package com.elmsw.core;
 
 import com.elmsw.Converter;
+import com.elmsw.core.converters.ReflectionConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNull;

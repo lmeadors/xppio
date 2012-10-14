@@ -1,9 +1,8 @@
-package com.elmsw.core;
+package com.elmsw.core.converters;
 
 import com.elmsw.Converter;
 import com.elmsw.XppIO;
-
-import java.lang.reflect.Field;
+import com.elmsw.core.converters.NoOpConverter;
 
 public class StringConverter extends NoOpConverter<String> implements Converter<String> {
 

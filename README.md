@@ -1,13 +1,14 @@
 xppio
 =====
+
 XML Pull Parser based utility for mapping xml to objects
 
 This project was created because all of the existing libraries to do it suck.
 
 This one probably sucks, too...just in a way that's more palatable for me.
 
-If you want a small library that doesn't explode when you throw extra xml that you don't have in your objects at it,
-this might work for you.
+If you want a small (16k) library with almost no dependencies (only slf - 26k) that doesn't explode when you throw extra
+xml that you don't have in your objects at it, this might work out for you.
 
 For example, say this is your class:
 

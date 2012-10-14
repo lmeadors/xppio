@@ -1,5 +1,6 @@
 package com.elmsw.core;
 
+import com.elmsw.core.exceptionhandlers.SilentFailure;
 import org.junit.Test;
 
 public class SilentFailureTest {

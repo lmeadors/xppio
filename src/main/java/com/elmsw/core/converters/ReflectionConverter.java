@@ -1,6 +1,7 @@
-package com.elmsw.core;
+package com.elmsw.core.converters;
 
 import com.elmsw.Converter;
+import com.elmsw.core.converters.NoOpConverter;
 
 import java.lang.reflect.Field;
 

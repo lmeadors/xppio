@@ -1,6 +1,6 @@
 package com.elmsw;
 
-import com.elmsw.core.PropertyNameStrategy;
+import com.elmsw.core.namingstrategies.PropertyNameStrategy;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.slf4j.Logger;

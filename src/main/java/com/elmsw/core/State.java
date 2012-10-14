@@ -1,5 +1,8 @@
-package com.elmsw;
+package com.elmsw.core;
 
+import com.elmsw.Converter;
+import com.elmsw.ExceptionHandler;
+import com.elmsw.XppIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
@@ -17,7 +20,7 @@ public class State {
 	private String nextPropertyName;
 	private Stack<Object> stack = new Stack<Object>();
 
-	State(ExceptionHandler exceptionHandler) {
+	public State(ExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 	}
 

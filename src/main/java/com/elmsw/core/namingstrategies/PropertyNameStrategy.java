@@ -1,4 +1,4 @@
-package com.elmsw.core;
+package com.elmsw.core.namingstrategies;
 
 import com.elmsw.NamingStrategy;
 
