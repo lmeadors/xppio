@@ -1,0 +1,8 @@
+<customer>
+	<id>123</id>
+	<name>Blah Inc.</name>
+	<account>
+		<id>123</id>
+		<name>Blah Sales</name>
+	</account>
+</customer>
