@@ -12,22 +12,19 @@ xml that you don't have in your objects at it, this might work out for you.
 
 For example, say this is your class:
 
-public class Customer {
-
-	private Integer id;
-	private String name;
-
-	// extra java noise here
-
-}
+	public class Customer {
+		private Integer id;
+		private String name;
+		// extra java noise here - getters and setters, etc...
+	}
 
 And you want to create an object of this type from this xml:
 
-<customer>
-	<id>123</id>
-	<name>Blah Inc.</name>
-	<number>123-123-1234</number>
-</customer>
+	<customer>
+		<id>123</id>
+		<name>Blah Inc.</name>
+		<number>123-123-1234</number>
+	</customer>
 
 You do this:
 
