@@ -9,8 +9,8 @@ This one probably sucks, too...just in a way that's more palatable for me.
 
 What's cool?
 ------
-* it's tiny less than 50k including the dependency (singular - slf-api).
-* it's extensible - the main class is 106 lines of executable code, everything else can be replaced
+* it's tiny: less than 50k including the dependency (singular - slf-api).
+* it's extensible: the main class is 106 lines of executable code, everything else can be replaced
 * it doesn't explode if your xml has extra elements
 
 
@@ -109,4 +109,11 @@ The code for creating this object looks something like this:
 	xppIO.addAlias("lineItem", LineItem.class);
 	xppIO.addAlias("lineItemList", ArrayList.class);
 	final Order actualOrder = xppIO.toObject(xml);
+
+What's missing?
+------
+It might be nice to add annotations for aliases. That's a possible addition...but I'm not convinced that this is
+something the framework should do, because it's more of a configuration thing.
+
+Other collection types like Maps and Sets are not yet supported. I don't need them yet, so I didn't build the support.
 
