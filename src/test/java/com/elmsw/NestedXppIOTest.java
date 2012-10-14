@@ -18,7 +18,7 @@ public class NestedXppIOTest extends XppIOTestBase {
 	public static final String ACCOUNT_XML = "<account><id>123</id><name>Blah Sales</name></account>";
 	public static final String CUSTOMER_XML = "<customer><id>123</id><name>Blah Inc.</name></customer>";
 	public static final String CUSTOMER_ACCOUNT_XML = "<customer><id>123</id><name>Blah Inc.</name>" + ACCOUNT_XML + "</customer>";
-	public static final String CUSTOMER_ACCOUNT_EXTRA_XML = "<customer><foo>bar</foo><id>123</id><name>Blah Inc.</name>" + ACCOUNT_XML + "</customer>";
+	public static final String CUSTOMER_ACCOUNT_EXTRA_XML = "<customer><number>123-123-1234</number><id>123</id><name>Blah Inc.</name>" + ACCOUNT_XML + "</customer>";
 
 	@Test
 	public void shouldReadObjectWithoutChildObject() throws IOException, XmlPullParserException, IllegalAccessException, InstantiationException {

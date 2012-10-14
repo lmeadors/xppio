@@ -1,11 +1,17 @@
 package com.elmsw;
 
 import com.elmsw.core.PropertyNameStrategy;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.beans.PropertyDescriptor;
+import java.text.MessageFormat;
+
+import static org.junit.Assert.assertEquals;
 
 public abstract class XppIOTestBase {
 
@@ -31,6 +37,29 @@ public abstract class XppIOTestBase {
 		};
 		final NamingStrategy namingStrategy = new PropertyNameStrategy();
 		xppIO = new XppIO(factory, exceptionHandler, namingStrategy);
+	}
+
+	public <T, S extends T> void assertPropertiesAreEqual(T expected, S actual, String... excludes) throws Exception {
+		PropertyDescriptor[] pd = PropertyUtils.getPropertyDescriptors(expected);
+		for (PropertyDescriptor p : pd) {
+			Boolean excluded = Boolean.FALSE;
+			for (String s : excludes) {
+				if (s.equalsIgnoreCase(p.getName())) {
+					excluded = Boolean.TRUE;
+				}
+			}
+			if (!excluded) {
+				Object expectedValue = PropertyUtils.getProperty(expected, p.getName());
+				Object actualValue = PropertyUtils.getProperty(actual, p.getName());
+
+				if ((expectedValue == null) && (actualValue == null)) {
+					// We will also consider two nulls as equal, even though technically they aren't.
+					// In practice, though, this method is called to test "sameness", not equality.
+				} else {
+					assertEquals(MessageFormat.format("Assert failed for property ''{0}''", p.getName()), expectedValue, actualValue);
+				}
+			}
+		}
 	}
 
 }

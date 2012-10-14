@@ -1,0 +1,23 @@
+<order>
+	<id>1</id>
+	<lineItemList>
+		<lineItem>
+			<id>1</id>
+			<orderId>1</orderId>
+			<productId>3</productId>
+			<quantity>4</quantity>
+		</lineItem>
+		<lineItem>
+			<id>2</id>
+			<orderId>1</orderId>
+			<productId>4</productId>
+			<quantity>5</quantity>
+		</lineItem>
+		<lineItem>
+			<id>3</id>
+			<orderId>1</orderId>
+			<productId>5</productId>
+			<quantity>6</quantity>
+		</lineItem>
+	</lineItemList>
+</order>

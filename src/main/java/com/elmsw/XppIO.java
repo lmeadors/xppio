@@ -140,12 +140,8 @@ public class XppIO {
 			final String text = converter.asText(object, this);
 			if (Converter.NOT_TEXT.equals(text)) {
 				final String xml = converter.asXml(object, this);
-				if (Converter.NOT_XML.equals(xml)) {
-					// odd, we return nothing from the converter? OK.
-				} else {
-					log.debug("adding xml from converter to {}", element.getTagName());
-					appendXmlChildrenTo(element, xml);
-				}
+				log.debug("adding xml from converter to {}", element.getTagName());
+				appendXmlChildrenTo(element, xml);
 			} else {
 				element.setTextContent(text);
 			}
@@ -160,7 +156,6 @@ public class XppIO {
 		final NodeList childNodes = node.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			final Node child = childNodes.item(i);
-//			element.getOwnerDocument().importNode(child, true);
 			element.appendChild(element.getOwnerDocument().importNode(child, true));
 		}
 	}
