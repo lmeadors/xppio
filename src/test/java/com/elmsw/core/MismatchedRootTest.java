@@ -61,7 +61,7 @@ public class MismatchedRootTest extends AbstractTestBase{
 
 		// setup test
 		// this is the xml we are dealing with
-		final String xml = "<envelope><blah><lol>wtf?</lol><id>2</id><name>customer</name><account><id>1</id><name>test acct</name></account></blah></envelope>";
+		final String xml = "<envelope><blah><lol>wth?</lol><id>2</id><name>customer</name><account><id>1</id><name>test acct</name></account></blah></envelope>";
 
 		// this is what we expect to extract from the xml
 		final Account expectedAccount = new Account();
