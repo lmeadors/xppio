@@ -9,7 +9,7 @@ This one probably sucks, too...just in a way that's more palatable for me.
 
 What's cool?
 ------
-* it's tiny: less than 50k including the dependency (singular - slf-api).
+* it's tiny: less than 200k including the dependencies (xpp3 and slf-api).
 * it's extensible: the main class is 106 lines of executable code, everything else can be replaced
 * it doesn't explode if your xml has extra elements
 

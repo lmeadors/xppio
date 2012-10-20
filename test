@@ -1,2 +1,2 @@
 #!/bin/bash
-mvn clean test cobertura:cobertura
+mvn clean test-compile cobertura:cobertura

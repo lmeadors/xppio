@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -24,10 +25,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -40,8 +43,10 @@ public class XppIO {
 
 	private static final Logger log = LoggerFactory.getLogger(XppIO.class);
 
-	final private XmlPullParserFactory factory;
+	final private XmlPullParserFactory xmlPullParserFactory;
 	final private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+	final private XPathFactory xPathFactory;
+	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 	final private Map<String, Class> aliasMap = new HashMap<String, Class>();
 
@@ -53,18 +58,21 @@ public class XppIO {
 	final private StateFactory stateFactory;
 
 	public XppIO(
-			XmlPullParserFactory factory,
+			XmlPullParserFactory xmlPullParserFactory,
 			ExceptionHandler exceptionHandler,
 			NamingStrategy namingStrategy,
 			StateFactory stateFactory
 	) {
-		this.factory = factory;
+		this.xmlPullParserFactory = xmlPullParserFactory;
 		this.exceptionHandler = exceptionHandler;
 		this.namingStrategy = namingStrategy;
 		this.stateFactory = stateFactory;
+		this.xPathFactory = XPathFactory.newInstance();
+
 		converterMap.put(String.class, new StringConverter());
 		converterMap.put(Integer.class, new IntegerConverter());
 		converterMap.put(List.class, new ListConverter());
+
 	}
 
 	public XppIO() throws XmlPullParserException {
@@ -80,7 +88,7 @@ public class XppIO {
 
 		final XmlPullParser xpp;
 		try {
-			xpp = factory.newPullParser();
+			xpp = xmlPullParserFactory.newPullParser();
 		} catch (XmlPullParserException e) {
 			// we don't send this to the exception handler because it's a show stopper
 			throw new RuntimeException(e.toString(), e);
@@ -141,6 +149,67 @@ public class XppIO {
 		return xml;
 	}
 
+	public Object populate(Object target, String xml, String start) {
+		try {
+
+			final Class targetType = target.getClass();
+
+			// extract just the node we want from the expression the user provided
+			final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+
+			// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
+			// but it works for now...
+			final Field[] fields = targetType.getDeclaredFields();
+			final NodeList nodeList = root.getChildNodes();
+			final int nodeCount = nodeList.getLength();
+
+			for (Field field : fields) {
+				final String fieldName = field.getName();
+				log.debug("looking for a match for {}", fieldName);
+				for (int i = 0; i < nodeCount; i++) {
+					final Node node = nodeList.item(i);
+					final String nodeName = node.getNodeName();
+					log.debug("node name: {}", nodeName);
+					if (nodeName.equals(fieldName)) {
+						final Class fieldType = field.getType();
+						final int length = node.getChildNodes().getLength();
+						log.debug("node has {} children", length);
+						if (length < 2) {
+							final Converter converter = getConverterForClass(fieldType);
+							final String content = node.getTextContent();
+							log.debug("found a match, value is: {}", content);
+							log.debug("trying to use converter {} to set value", converter);
+							field.setAccessible(true);
+							field.set(target, converter.fromString(content));
+						} else {
+							log.debug("Node '{}' is a nested object of {}, we need to map it out if we can...",
+									new Object[]{
+											nodeToString(node),
+											fieldType
+									}
+							);
+							Object value = populate(fieldType.newInstance(), nodeToString(node), "/" + nodeName);
+							log.debug("value is {}", value);
+							field.setAccessible(true);
+							field.set(target, value);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			exceptionHandler.handle(e);
+		}
+		return target;
+	}
+
+	private String nodeToString(Node node) throws TransformerException {
+		final Transformer transformer = transformerFactory.newTransformer();
+		final StringWriter writer = new StringWriter();
+		final StreamResult result = new StreamResult(writer);
+		transformer.transform(new DOMSource(node), result);
+		return writer.toString();
+	}
+
 	private Element buildElement(Object object, String name, Document document) throws IllegalAccessException, IOException, SAXException, ParserConfigurationException {
 
 		final Element element = document.createElement(name);
@@ -172,7 +241,7 @@ public class XppIO {
 	}
 
 	private void appendXmlChildrenTo(Element element, String xml) throws IOException, SAXException, ParserConfigurationException {
-		final Node node = stringAsNode(xml);
+		final Node node = fragmentAsNode(xml);
 		final NodeList childNodes = node.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			final Node child = childNodes.item(i);
@@ -180,12 +249,22 @@ public class XppIO {
 		}
 	}
 
-	private Node stringAsNode(String xml) throws ParserConfigurationException, IOException, SAXException {
+	private Node fragmentAsNode(String xml) throws ParserConfigurationException, IOException, SAXException {
 		// we wrap this, because we can get a list of items from the converter
 		// in that case, we'll add all of the child nodes to the parent
-		String wellFormedXml = "<x>" + xml + "</x>";
+		final String wellFormedXml = "<x>" + xml + "</x>";
 		log.debug("Making {} into an xml node", wellFormedXml);
-		return documentBuilderFactory.newDocumentBuilder().parse(new ByteArrayInputStream(wellFormedXml.getBytes())).getDocumentElement();
+		return documentBuilderFactory.newDocumentBuilder().parse(getStringInputSource(wellFormedXml)).getDocumentElement();
+	}
+
+	private Node xmlAsNode(String xml) throws ParserConfigurationException, IOException, SAXException {
+		// we wrap this, because we can get a list of items from the converter
+		// in that case, we'll add all of the child nodes to the parent
+		return documentBuilderFactory.newDocumentBuilder().parse(getStringInputSource(xml)).getDocumentElement();
+	}
+
+	private InputSource getStringInputSource(String xml) {
+		return new InputSource(new StringReader(xml));
 	}
 
 	private String getElementName(Object object) {

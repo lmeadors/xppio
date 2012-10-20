@@ -1,4 +1,4 @@
-package com.elmsw.core;
+package com.elmsw;
 
 import com.elmsw.core.namingstrategies.ClassNameStrategy;
 import org.junit.Test;
