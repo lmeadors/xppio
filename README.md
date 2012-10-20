@@ -110,6 +110,33 @@ The code for creating this object looks something like this:
 	xppIO.addAlias("lineItemList", ArrayList.class);
 	final Order actualOrder = xppIO.toObject(xml);
 
+You should see the XML I have to deal with...
+------
+Yeah, I know - you don't always get XML that matches what you need exactly. That's fine, you can extract fragments, too.
+
+Here's an example. Let's start with this XML:
+
+	<envelope>
+	  <blah>
+		<lol>wth?</lol>
+		<id>2</id>
+		<name>customer</name>
+		<account>
+		  <id>1</id>
+		  <name>test acct</name>
+		</account>
+	  </blah>
+	</envelope>
+
+Wait, that's a customer with an account in it! Sure it's got some extra noise in it, but we can still consume that:
+
+	final CustomerWithAccount actualCustomer = new CustomerWithAccount();
+	xppIO.populate(actualCustomer, xml, "/envelope/blah");
+
+What the heck is that doing? We're creating the object to populate, then telling xppio to look at the node at
+"/envelope/blah" and just pretend it's a CustomerWithAccount object. Think of this as casting in XML. :-P
+
+
 What's missing?
 ------
 It might be nice to add annotations for aliases. That's a possible addition...but I'm not convinced that this is

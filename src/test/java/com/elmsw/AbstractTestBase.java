@@ -19,11 +19,11 @@ public abstract class AbstractTestBase {
 	private static final Logger log = LoggerFactory.getLogger(AbstractTestBase.class);
 
 	protected XppIO xppIO;
-	protected final XmlPullParserFactory factory;
+	protected final XmlPullParserFactory xmlPullParserFactory;
 
 	public AbstractTestBase() {
 		try {
-			factory = XmlPullParserFactory.newInstance();
+			xmlPullParserFactory = XmlPullParserFactory.newInstance();
 		} catch (XmlPullParserException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -37,7 +37,7 @@ public abstract class AbstractTestBase {
 			}
 		};
 		final NamingStrategy namingStrategy = new PropertyNameStrategy();
-		xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
+		xppIO = new XppIO(xmlPullParserFactory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 	}
 
 	public <T, S extends T> void assertPropertiesAreEqual(T expected, S actual, String... excludes) throws Exception {
