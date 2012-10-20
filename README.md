@@ -136,6 +136,17 @@ Wait, that's a customer with an account in it! Sure it's got some extra noise in
 What the heck is that doing? We're creating the object to populate, then telling xppio to look at the node at
 "/envelope/blah" and just pretend it's a CustomerWithAccount object. Think of this as casting in XML. :-P
 
+What's more here is that you can map the "/envelope/blah/account" fragment to a customer just as easily (because they
+have similar properties) like this:
+
+	final Customer actualCustomer = new Customer();
+	xppIO.populate(actualCustomer, xml, "/envelope/blah/account");
+
+The same deal works for mapping "/envelope/blah" to an account:
+
+	final Account actualAccount = new Account();
+	xppIO.populate(actualAccount, xml, "/envelope/blah");
+
 
 What's missing?
 ------
@@ -144,3 +155,6 @@ something the framework should do, because it's more of a configuration thing.
 
 Other collection types like Maps and Sets are not yet supported. I don't need them yet, so I didn't build the support.
 
+The fragment mapping code needs to be optimized. I wanted to make it work and test the snot out of it first though. Once
+it is better tested and proven to work, I'll revisit it and optimize it. It's currently O(m*n) but could be O(m+n) or
+better.

@@ -2,6 +2,7 @@ package com.elmsw.core;
 
 import com.elmsw.AbstractTestBase;
 import com.elmsw.beans.Account;
+import com.elmsw.beans.Customer;
 import com.elmsw.beans.CustomerWithAccount;
 import org.junit.Test;
 
@@ -52,6 +53,37 @@ public class MismatchedRootTest extends AbstractTestBase{
 		// verify behavior
 		assertPropertiesAreEqual(expectedCustomer, actualCustomer, "account");
 		assertPropertiesAreEqual(expectedAccount, actualCustomer.getAccount());
+
+	}
+
+	@Test
+	public void shouldBeAbleToDoWeirdFragmentMapping() throws Exception {
+
+		// setup test
+		// this is the xml we are dealing with
+		final String xml = "<envelope><blah><lol>wtf?</lol><id>2</id><name>customer</name><account><id>1</id><name>test acct</name></account></blah></envelope>";
+
+		// this is what we expect to extract from the xml
+		final Account expectedAccount = new Account();
+		expectedAccount.setId(2);
+		expectedAccount.setName("customer");
+
+		final Customer expectedCustomer = new Customer();
+		expectedCustomer.setId(1);
+		expectedCustomer.setName("test acct");
+
+		// run tests - ARE YOU NUTS?!
+		// OK, here we're actually mapping the account fragment to the customer object - they have the similar properties, so why not?
+		final Customer actualCustomer = new Customer();
+		xppIO.populate(actualCustomer, xml, "/envelope/blah/account");
+
+		// here we're going the other way - mapping the blah element (a customer before) to an account. :-|
+		final Account actualAccount = new Account();
+		xppIO.populate(actualAccount, xml, "/envelope/blah");
+
+		// verify behavior
+		assertPropertiesAreEqual(expectedCustomer, actualCustomer);
+		assertPropertiesAreEqual(expectedAccount, actualAccount);
 
 	}
 
