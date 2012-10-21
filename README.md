@@ -180,3 +180,4 @@ I think it's light enough that you don't really need to.
 More tests - cobertura tells me it's almost 100% tested, but that's only one measure. I'd like to get loads more tests
 defined, but time is limited.
 
+The name sucks.

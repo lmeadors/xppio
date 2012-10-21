@@ -176,7 +176,7 @@ public class XppIO {
 
 				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
 				// but it works for now...
-				final Field[] fields = targetType.getDeclaredFields();
+				final Field[] fields = getFields(targetType);
 				final NodeList nodeList = root.getChildNodes();
 				final int nodeCount = nodeList.getLength();
 
@@ -222,6 +222,19 @@ public class XppIO {
 			exceptionHandler.handle(e);
 		}
 		return target;
+	}
+
+	private Field[] getFields(Class targetType) {
+		if(Object.class.equals(targetType)){
+			// root of the object hierarchy, done.
+			return targetType.getDeclaredFields();
+		}else {
+			// this class has a super-class - get it's fields and add it to the list of fields this class defines
+			ArrayList<Field> fields = new ArrayList<Field>();
+			fields.addAll(Arrays.asList(getFields(targetType.getSuperclass())));
+			fields.addAll(Arrays.asList(targetType.getDeclaredFields()));
+			return fields.toArray(new Field[fields.size()]);
+		}
 	}
 
 	private Object newInstance(final Class fieldType, String nodeName) throws Exception {
