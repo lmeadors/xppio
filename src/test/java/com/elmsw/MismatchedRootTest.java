@@ -1,6 +1,5 @@
-package com.elmsw.core;
+package com.elmsw;
 
-import com.elmsw.AbstractTestBase;
 import com.elmsw.beans.*;
 import org.junit.Test;
 import org.slf4j.Logger;

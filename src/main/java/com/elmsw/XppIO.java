@@ -163,6 +163,7 @@ public class XppIO {
 
 				for (int i = 0; i < nodeCount; i++) {
 					final String input = nodeToString(list.item(i)).trim();
+					// we can't map an empty string, don't be dumb here...
 					if (!input.isEmpty()) {
 						log.debug("adding {} to list", input);
 						targetCollection.add(toObject(input));

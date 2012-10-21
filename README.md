@@ -165,7 +165,18 @@ It might be nice to add annotations for aliases. That's a possible addition...bu
 something the framework should do, because it's more of a configuration thing.
 
 Other collection types like Maps and Sets are not yet supported. I don't need them yet, so I didn't build the support.
+That said, using an alias for your collection with populate() should work for classes that implement collection. I just
+haven't tested or tried it yet. Let me know.
 
 The fragment mapping code needs to be optimized. I wanted to make it work and test the snot out of it first though. Once
 it is better tested and proven to work, I'll revisit it and optimize it. It's currently O(m*n) but could be O(m+n) or
 better.
+
+Usage patterns - the code should all be threads safe, with the possible exception of the alias mapping - if you have a
+thread adding aliases and other mapping stuff at the same time, things could get funny...but that's kind of a dumb idea
+if you think about it. I wouldn't recommend doing that at any rate. You should be able to use this as a singleton, but
+I think it's light enough that you don't really need to.
+
+More tests - cobertura tells me it's almost 100% tested, but that's only one measure. I'd like to get loads more tests
+defined, but time is limited.
+
