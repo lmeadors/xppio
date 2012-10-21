@@ -7,11 +7,13 @@ This project was created because all of the existing libraries to do it suck.
 
 This one probably sucks, too...just in a way that's more palatable for me.
 
+
 What's cool?
 ------
 * it's tiny: less than 200k including the dependencies (xpp3 and slf-api).
-* it's extensible: the main class is 106 lines of executable code, everything else can be replaced
+* it's extensible: the main class is less than 200 lines of executable code, everything else can be replaced
 * it doesn't explode if your xml has extra elements
+* it will map xml fragments into existing objects
 
 
 How do I use it to create xml?
@@ -43,7 +45,16 @@ You want to create an object from that xml? Easy.
 	Customer customer = xppIO.toObject(input);
 
 See the trick there? You do have to tell xppio that when it sees the <customer> element that it needs to create an
-instance of the Customer class. Acceptable for me.
+instance of the Customer class. Acceptable for me, but what if you don't want to do that? What if your class is called
+MyCustomerIsCoolerThanYours?
+
+Not a problem - using the same XML as the previous example, you can do this:
+
+	final MyCustomerIsCoolerThanYours actualCustomer = new MyCustomerIsCoolerThanYours();
+	xppIO.populate(actualCustomer, input, "/customer");
+
+So, there, we're taking an existing object, and saying that starting at the /customer node of the XML data, it will map
+to a MyCustomerIsCoolerThanYours object.
 
 Now, what happens if you get the xml from someone and it has extra stuff in it? Like this:
 
@@ -62,7 +73,7 @@ You do this:
 See how it just ignores missing fields? What happened there?
 
 By default, xppio ignores missing fields. If you want to to blow up in this case, you CAN make it happen by adding an
-exception handler that explodes. Your choice, not mine. It's open source, and it's extensible.
+exception handler that explodes. Your choice, not mine. It's open source and it's extensible, too.
 
 Nesting?
 ------
