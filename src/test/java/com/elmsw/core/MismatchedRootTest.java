@@ -1,18 +1,23 @@
 package com.elmsw.core;
 
 import com.elmsw.AbstractTestBase;
-import com.elmsw.beans.Account;
-import com.elmsw.beans.Customer;
-import com.elmsw.beans.CustomerWithAccount;
+import com.elmsw.beans.*;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MismatchedRootTest extends AbstractTestBase{
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class MismatchedRootTest extends AbstractTestBase {
+
+	private static final Logger log = LoggerFactory.getLogger(MismatchedRootTest.class);
 
 	@Test
 	public void shouldPopulateExistingObjectWithFragmentContents() throws Exception {
 
 		// setup test - this is the xml we have to deal with
-		final String xml = "<some><envelope><x><id>2</id><name>foo</name></x></envelope></some>";
+		final String xml = resourceAsString("samples/simple_envelope.xml");
 
 		// this is what we want to get out of it
 		final Account expected = new Account();
@@ -35,7 +40,9 @@ public class MismatchedRootTest extends AbstractTestBase{
 	public void shouldPopulateComplexNestedObject() throws Exception {
 
 		// this is the xml we are dealing with
-		final String xml = "<envelope><blah><lol>wtf?</lol><id>2</id><name>customer</name><account><id>1</id><name>test acct</name></account></blah></envelope>";
+		final String xml = resourceAsString("samples/madness.xml");
+
+//		xppIO.addAlias("account", Account.class);
 
 		// this is what we expect to extract from the xml
 		final Account expectedAccount = new Account();
@@ -61,7 +68,7 @@ public class MismatchedRootTest extends AbstractTestBase{
 
 		// setup test
 		// this is the xml we are dealing with
-		final String xml = "<envelope><blah><lol>wth?</lol><id>2</id><name>customer</name><account><id>1</id><name>test acct</name></account></blah></envelope>";
+		final String xml = resourceAsString("samples/madness.xml");
 
 		// this is what we expect to extract from the xml
 		final Account expectedAccount = new Account();
@@ -84,6 +91,26 @@ public class MismatchedRootTest extends AbstractTestBase{
 		// verify behavior
 		assertPropertiesAreEqual(expectedCustomer, actualCustomer);
 		assertPropertiesAreEqual(expectedAccount, actualAccount);
+
+	}
+
+	@Test
+	public void shouldMapNodeListToCollection() throws IOException {
+
+		// setup test
+		final String xml = resourceAsString("samples/embedded_order.xml");
+
+		// need some hints here to construct the list items
+		xppIO.addAlias("lineItem", LineItem.class);
+		xppIO.addAlias("lineItemList", ArrayList.class);
+
+		// run test
+		final Order order = new Order();
+		xppIO.populate(order, xml, "/envelope/body/order");
+
+		// verify behavior
+		log.debug("order: {}", order);
+		log.debug("order as xml:\n{}", xppIO.toXml(order));
 
 	}
 

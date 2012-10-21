@@ -35,9 +35,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XppIO {
 
@@ -154,44 +152,67 @@ public class XppIO {
 
 			final Class targetType = target.getClass();
 
-			// extract just the node we want from the expression the user provided
-			final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+			// if the target type is a collection, we need to get it's children, populate objects from them, and add
+			// them to the collection
+			if (Collection.class.isAssignableFrom(targetType)) {
+				log.debug("Type {} is a collection.", targetType);
+				Node node = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+				NodeList list = node.getChildNodes();
+				final int nodeCount = list.getLength();
+				Collection<Object> targetCollection = (Collection<Object>) target;
 
-			// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
-			// but it works for now...
-			final Field[] fields = targetType.getDeclaredFields();
-			final NodeList nodeList = root.getChildNodes();
-			final int nodeCount = nodeList.getLength();
-
-			for (Field field : fields) {
-				final String fieldName = field.getName();
-				log.debug("looking for a match for {}", fieldName);
 				for (int i = 0; i < nodeCount; i++) {
-					final Node node = nodeList.item(i);
-					final String nodeName = node.getNodeName();
-					log.debug("node name: {}", nodeName);
-					if (nodeName.equals(fieldName)) {
-						final Class fieldType = field.getType();
-						final int length = node.getChildNodes().getLength();
-						log.debug("node has {} children", length);
-						if (length < 2) {
-							final Converter converter = getConverterForClass(fieldType);
-							final String content = node.getTextContent();
-							log.debug("found a match, value is: {}", content);
-							log.debug("trying to use converter {} to set value", converter);
-							field.setAccessible(true);
-							field.set(target, converter.fromString(content));
-						} else {
-							log.debug("Node '{}' is a nested object of {}, we need to map it out if we can...",
-									new Object[]{
-											nodeToString(node),
-											fieldType
-									}
-							);
-							Object value = populate(fieldType.newInstance(), nodeToString(node), "/" + nodeName);
-							log.debug("value is {}", value);
-							field.setAccessible(true);
-							field.set(target, value);
+					final String input = nodeToString(list.item(i)).trim();
+					if (!input.isEmpty()) {
+						log.debug("adding {} to list", input);
+						targetCollection.add(toObject(input));
+					}
+				}
+
+			} else {
+				// extract just the node we want from the expression the user provided
+				final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+
+				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
+				// but it works for now...
+				final Field[] fields = targetType.getDeclaredFields();
+				final NodeList nodeList = root.getChildNodes();
+				final int nodeCount = nodeList.getLength();
+
+				for (Field field : fields) {
+					final String fieldName = field.getName();
+					log.debug("looking for a match for {}", fieldName);
+					for (int i = 0; i < nodeCount; i++) {
+						final Node node = nodeList.item(i);
+						final String nodeName = node.getNodeName();
+						log.debug("node name: {}", nodeName);
+						if (nodeName.equals(fieldName)) {
+							final Class fieldType = field.getType();
+							final int length = node.getChildNodes().getLength();
+							log.debug("node has {} children", length);
+							if (length < 2) {
+								final Converter converter = getConverterForClass(fieldType);
+								final String content = node.getTextContent();
+								log.debug("found a match, value is: {}", content);
+								log.debug("trying to use converter {} to set value", converter);
+								field.setAccessible(true);
+								field.set(target, converter.fromString(content));
+							} else {
+								log.debug("Node '{}' is a nested object of {}, we need to map it out if we can...",
+										new Object[]{
+												nodeToString(node),
+												fieldType
+										}
+								);
+								Object value = populate(
+										newInstance(fieldType, nodeName),
+										nodeToString(node),
+										"/" + nodeName
+								);
+								log.debug("value is {}", value);
+								field.setAccessible(true);
+								field.set(target, value);
+							}
 						}
 					}
 				}
@@ -202,15 +223,23 @@ public class XppIO {
 		return target;
 	}
 
+	private Object newInstance(final Class fieldType, String nodeName) throws Exception {
+
+		// try to find an alias - these take precedence
+		return typeForElement(nodeName, fieldType).newInstance();
+
+	}
+
 	private String nodeToString(Node node) throws TransformerException {
 		final Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 		final StringWriter writer = new StringWriter();
 		final StreamResult result = new StreamResult(writer);
 		transformer.transform(new DOMSource(node), result);
 		return writer.toString();
 	}
 
-	private Element buildElement(Object object, String name, Document document) throws IllegalAccessException, IOException, SAXException, ParserConfigurationException {
+	private Element buildElement(Object object, String name, Document document) throws Exception {
 
 		final Element element = document.createElement(name);
 
@@ -240,7 +269,7 @@ public class XppIO {
 
 	}
 
-	private void appendXmlChildrenTo(Element element, String xml) throws IOException, SAXException, ParserConfigurationException {
+	private void appendXmlChildrenTo(Element element, String xml) throws Exception {
 		final Node node = fragmentAsNode(xml);
 		final NodeList childNodes = node.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
@@ -306,18 +335,22 @@ public class XppIO {
 		aliasMap.put(alias, type);
 	}
 
-	public Class typeForElement(String nextPropertyName) {
+	public Class typeForElement(String elementName, Class defaultType) {
 
 		final Class nextType;
 
-		if (aliasMap.containsKey(nextPropertyName)) {
-			nextType = aliasMap.get(nextPropertyName);
+		if (aliasMap.containsKey(elementName)) {
+			nextType = aliasMap.get(elementName);
 		} else {
-			nextType = String.class;
+			nextType = defaultType;
 		}
 
 		return nextType;
 
+	}
+
+	public Class typeForElement(String elementName) {
+		return typeForElement(elementName, String.class);
 	}
 
 }

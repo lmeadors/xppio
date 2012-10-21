@@ -10,6 +10,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.beans.PropertyDescriptor;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 
 import static org.junit.Assert.assertEquals;
@@ -61,6 +64,22 @@ public abstract class AbstractTestBase {
 				}
 			}
 		}
+	}
+
+	protected String resourceAsString(String resource) throws IOException {
+		// todo: clean-up and exception handling here? Meh, it's a test...
+		final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final byte[] buffer = new byte[1024];
+		int read = inputStream.read(buffer);
+		while (read > 0){
+			outputStream.write(buffer, 0, read);
+			read = inputStream.read(buffer);
+		}
+		outputStream.flush();
+		final String returnValue = new String(outputStream.toByteArray());
+		log.debug(returnValue);
+		return returnValue;
 	}
 
 }
