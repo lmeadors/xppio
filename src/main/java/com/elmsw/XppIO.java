@@ -47,6 +47,7 @@ public class XppIO {
 	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 	final private Map<String, Class> aliasMap = new HashMap<String, Class>();
+	private static final ThreadLocal<Map<String, Class>> localAliasMap = new ThreadLocal<Map<String, Class>>();
 
 	final private Converter reflectionConverter = new ReflectionConverter();
 
@@ -55,12 +56,14 @@ public class XppIO {
 	final private NamingStrategy namingStrategy;
 	final private StateFactory stateFactory;
 
+
 	public XppIO(
 			XmlPullParserFactory xmlPullParserFactory,
 			ExceptionHandler exceptionHandler,
 			NamingStrategy namingStrategy,
 			StateFactory stateFactory
 	) {
+
 		this.xmlPullParserFactory = xmlPullParserFactory;
 		this.exceptionHandler = exceptionHandler;
 		this.namingStrategy = namingStrategy;
@@ -70,6 +73,8 @@ public class XppIO {
 		converterMap.put(String.class, new StringConverter());
 		converterMap.put(Integer.class, new IntegerConverter());
 		converterMap.put(List.class, new ListConverter());
+
+		localAliasMap.set(new HashMap<String, Class>());
 
 	}
 
@@ -225,10 +230,10 @@ public class XppIO {
 	}
 
 	private Field[] getFields(Class targetType) {
-		if(Object.class.equals(targetType)){
+		if (Object.class.equals(targetType)) {
 			// root of the object hierarchy, done.
 			return targetType.getDeclaredFields();
-		}else {
+		} else {
 			// this class has a super-class - get it's fields and add it to the list of fields this class defines
 			ArrayList<Field> fields = new ArrayList<Field>();
 			fields.addAll(Arrays.asList(getFields(targetType.getSuperclass())));
@@ -314,13 +319,20 @@ public class XppIO {
 		final Class objectClass = object.getClass();
 		if (aliasMap.containsValue(objectClass)) {
 			// crap, now i have to look this up
-			for (String alias : aliasMap.keySet()) {
-				if (aliasMap.get(alias).equals(objectClass)) {
-					return alias;
-				}
-			}
+			return findAlias(objectClass, aliasMap);
+		}else if(localAliasMap.get().containsValue(objectClass)){
+			return findAlias(objectClass, localAliasMap.get());
 		}
 		return namingStrategy.getElementName(object);
+	}
+
+	private String findAlias(Class type, Map<String, Class> map){
+		for (String alias : map.keySet()) {
+			if (map.get(alias).equals(type)) {
+				return alias;
+			}
+		}
+		throw new RuntimeException("Unable to find alias in map - something changed the map while searching. Bad.");
 	}
 
 	public Converter getConverterForClass(Class fieldClass) {
@@ -345,6 +357,10 @@ public class XppIO {
 
 	}
 
+	public void addLocalAlias(String alias, Class<?> type) {
+		localAliasMap.get().put(alias, type);
+	}
+
 	public void addAlias(String alias, Class<?> type) {
 		aliasMap.put(alias, type);
 	}
@@ -355,6 +371,8 @@ public class XppIO {
 
 		if (aliasMap.containsKey(elementName)) {
 			nextType = aliasMap.get(elementName);
+		} else if (localAliasMap.get().containsKey(elementName)) {
+			nextType = localAliasMap.get().get(elementName);
 		} else {
 			nextType = defaultType;
 		}

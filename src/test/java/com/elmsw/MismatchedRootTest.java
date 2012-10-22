@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MismatchedRootTest extends AbstractTestBase {
 
@@ -111,6 +113,20 @@ public class MismatchedRootTest extends AbstractTestBase {
 		log.debug("order: {}", order);
 		log.debug("order as xml:\n{}", xppIO.toXml(order));
 
+	}
+
+	@Test
+	public void shouldExtractJustListFromDocument() throws IOException {
+		// setup test
+		final String xml = resourceAsString("samples/embedded_order.xml");
+		List<LineItem> itemList = new LinkedList<LineItem>();
+		xppIO.addLocalAlias("lineItem", LineItem.class);
+
+		// run test
+		xppIO.populate(itemList, xml, "/envelope/body/order/lineItemList");
+
+		// verify behavior
+		System.out.println(itemList);
 	}
 
 }
