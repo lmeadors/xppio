@@ -153,6 +153,20 @@ public class XppIO {
 	}
 
 	public Object populate(Object target, String xml, String start) {
+
+		Object returnValue = null;
+
+		try {
+			returnValue = populate(target, xmlAsNode(xml), start);
+		} catch (Exception e) {
+			exceptionHandler.handle(e);
+		}
+
+		return returnValue;
+
+	}
+
+	public Object populate(Object target, Node xml, String start) {
 		try {
 
 			final Class targetType = target.getClass();
@@ -161,7 +175,7 @@ public class XppIO {
 			// them to the collection
 			if (Collection.class.isAssignableFrom(targetType)) {
 				log.debug("Type {} is a collection.", targetType);
-				Node node = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+				Node node = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
 				NodeList list = node.getChildNodes();
 				final int nodeCount = list.getLength();
 				Collection<Object> targetCollection = (Collection<Object>) target;
@@ -177,7 +191,7 @@ public class XppIO {
 
 			} else {
 				// extract just the node we want from the expression the user provided
-				final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xmlAsNode(xml), XPathConstants.NODE);
+				final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
 
 				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
 				// but it works for now...

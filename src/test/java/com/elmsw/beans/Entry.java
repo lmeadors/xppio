@@ -1,11 +1,9 @@
 package com.elmsw.beans;
 
-import java.util.List;
-
 public class Entry {
 
 	private String string;
-	private List<TitleListItem> list;
+	private Object list;
 
 	public String getString() {
 		return string;
@@ -15,12 +13,11 @@ public class Entry {
 		this.string = string;
 	}
 
-	public List<TitleListItem> getList() {
+	public Object getList() {
 		return list;
 	}
 
-	public void setList(List<TitleListItem> list) {
+	public void setList(Object list) {
 		this.list = list;
 	}
-
 }

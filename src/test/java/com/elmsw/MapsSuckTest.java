@@ -5,8 +5,9 @@ import com.elmsw.beans.TitleListItem;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
+import static org.junit.Assert.assertNotNull;
 
 public class MapsSuckTest extends AbstractTestBase {
 
@@ -17,14 +18,22 @@ public class MapsSuckTest extends AbstractTestBase {
 		final String xml = resourceAsString("samples/maps_suck.xml");
 
 		// run test
-		List<Entry> keyNames = new LinkedList<Entry>();
+		List<Entry> entryList = new LinkedList<Entry>();
 		xppIO.addLocalAlias("entry", Entry.class);
 		xppIO.addLocalAlias("list", LinkedList.class);
 		xppIO.addLocalAlias("titleListItem", TitleListItem.class);
-		xppIO.populate(keyNames, xml, "/message/body/results");
+		xppIO.populate(entryList, xml, "/message/body/results");
 
 		// verify behavior
-		System.out.println(keyNames);
+		System.out.println(entryList);
+
+		Map<String, List<TitleListItem>> map = new HashMap<String, List<TitleListItem>>();
+
+		for (Entry entry : entryList) {
+			map.put(entry.getString(), (List<TitleListItem>) entry.getList());
+		}
+
+		assertNotNull(map);
 
 	}
 
