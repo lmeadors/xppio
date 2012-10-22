@@ -1,0 +1,362 @@
+<message>
+	<status>OK</status>
+	<body>
+		<results>
+			<entry>
+				<string>Audiobooks</string>
+				<list>
+					<titleListItem>
+						<id>138485</id>
+						<title>War Horse</title>
+						<thumbnail>/audiobooks/9780545285308.png</thumbnail>
+						<year>2010</year>
+					</titleListItem>
+				</list>
+			</entry>
+			<entry>
+				<string>Movies</string>
+				<list>
+					<titleListItem>
+						<id>82752</id>
+						<title>War To End All Wars, A - World War One</title>
+						<description>UNK, 2010, RE</description>
+						<thumbnail>/jpg/admrye1072d.jpg</thumbnail>
+						<year>2010</year>
+					</titleListItem>
+					<titleListItem>
+						<id>85713</id>
+						<title>World War I - The War To End All Wars</title>
+						<description>UNK, 2008, Mill Creek Entertainment</description>
+						<thumbnail>/jpg/dstmv50653d.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>133355</id>
+						<title>Star Wars - The Clone Wars</title>
+						<thumbnail>000/000/000/010/245/000000000010245359.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>10512</id>
+						<title>Second World War Vol 02: Prelude To War</title>
+						<description>NR, 2005, Academy</description>
+						<thumbnail>/jpg/vra23742d.jpg</thumbnail>
+						<year>2005</year>
+					</titleListItem>
+					<titleListItem>
+						<id>102642</id>
+						<title>Secrets Of War: The Gulf War</title>
+						<description>NR, 1998, Image Entertainment</description>
+						<thumbnail>/jpg/imgid8770dcd.jpg</thumbnail>
+						<year>1998</year>
+					</titleListItem>
+					<titleListItem>
+						<id>112161</id>
+						<title>Cold War Into Guerrilla War</title>
+						<description>NR, Discovery Education</description>
+						<thumbnail>/jpg/dse773531.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>109893</id>
+						<title>War Zone: The American Civil War, The</title>
+						<description>UNK, Eagle Media</description>
+						<thumbnail>/jpg/viuem350899d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>50234</id>
+						<title>War Zone: War In The Desert</title>
+						<description>NR, Eagle Rock Entertainment</description>
+						<thumbnail>/jpg/umv350099d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>118914</id>
+						<title>War On The War On Drugs, The</title>
+						<description>NR, 2006, Ryko Distribution</description>
+						<thumbnail>/jpg/adm620034d.jpg</thumbnail>
+						<year>2006</year>
+					</titleListItem>
+					<titleListItem>
+						<id>9699</id>
+						<title>Second World War Vol 12: The War In The Air</title>
+						<description>NR, 2004, Academy</description>
+						<thumbnail>/jpg/vra23842d.jpg</thumbnail>
+						<year>2004</year>
+					</titleListItem>
+					<titleListItem>
+						<id>97924</id>
+						<title>War Zone: The War That Changed The World</title>
+						<description>UNK, Eagle Media</description>
+						<thumbnail>/jpg/viuem350919d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>45594</id>
+						<title>Eyewitness: The Pacific War: Road to War</title>
+						<description>NR, 2005, Artsmagic</description>
+						<thumbnail>/jpg/admawa005d.jpg</thumbnail>
+						<year>2005</year>
+					</titleListItem>
+					<titleListItem>
+						<id>18435</id>
+						<title>World War I - The War In Europe</title>
+						<description>UNK, 2003, AIMS Multimedia</description>
+						<thumbnail>/jpg/dse863100d.jpg</thumbnail>
+						<year>2003</year>
+					</titleListItem>
+					<titleListItem>
+						<id>8066</id>
+						<title>Second World War Vol 16: Prisoners Of War</title>
+						<description>NR, 2004, Academy</description>
+						<thumbnail>/jpg/vra23872d.jpg</thumbnail>
+						<year>2004</year>
+					</titleListItem>
+					<titleListItem>
+						<id>8707</id>
+						<title>Second World War Vol 13: The War In Pacific</title>
+						<description>NR, 2004, Academy</description>
+						<thumbnail>/jpg/vra24102d.jpg</thumbnail>
+						<year>2004</year>
+					</titleListItem>
+					<titleListItem>
+						<id>55874</id>
+						<title>Imperial War Museum - The Royal Navy At War</title>
+						<description>PG, Koch Vision</description>
+						<thumbnail>/jpg/kch6556d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>7813</id>
+						<title>Second World War Vol 11: War In The Desert</title>
+						<description>NR, 2004, Academy</description>
+						<thumbnail>/jpg/vra23832d.jpg</thumbnail>
+						<year>2004</year>
+					</titleListItem>
+					<titleListItem>
+						<id>115852</id>
+						<title>War Zone: Vietnam The Chopper War</title>
+						<description>NR, Eagle Rock Entertainment</description>
+						<thumbnail>/jpg/viuem350619d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>93950</id>
+						<title>War File: The Desert War</title>
+						<description>UNK, 2008, Allegro Films Productions</description>
+						<thumbnail>/jpg/alm269364d.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>96625</id>
+						<title>Civil War for Students - Causes of the War</title>
+						<description>UNK, SVE &amp; Churchill Media</description>
+						<thumbnail>/jpg/sve013391d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>116578</id>
+						<title>Civil War for Students - The War Years 1863-1865</title>
+						<description>UNK, SVE &amp; Churchill Media</description>
+						<thumbnail>/jpg/sve013417d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>121008</id>
+						<title>Civil War for Students - The War Years 1861-1862</title>
+						<description>UNK, SVE &amp; Churchill Media</description>
+						<thumbnail>/jpg/sve013409d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>115304</id>
+						<title>World War Ii - When The World Went To War Vol. 3</title>
+						<description>PG, 2008, ZYX Music</description>
+						<thumbnail>/jpg/kch10294d.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>115537</id>
+						<title>War Zone: The Great War Story Of Wwi</title>
+						<description>UNK, Eagle Rock Entertainment</description>
+						<thumbnail>/jpg/viu35055d.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>24647</id>
+						<title>Star Wars: Clone Wars Volume 1</title>
+						<description>UNK, 2004, 20th Century Fox</description>
+						<thumbnail>/jpg/twt2225792d.jpg</thumbnail>
+						<year>2004</year>
+					</titleListItem>
+				</list>
+			</entry>
+			<entry>
+				<string>Music</string>
+				<list>
+					<titleListItem>
+						<id>40216</id>
+						<title>War</title>
+						<thumbnail>/jpg/wem104122c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>115046</id>
+						<title>Best of War and More, The</title>
+						<thumbnail>/jpg/wem007225c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>37011</id>
+						<title>Best of War and More Vol. 2, The</title>
+						<thumbnail>/jpg/wem252625c.jpg</thumbnail>
+						<year>1970</year>
+					</titleListItem>
+					<titleListItem>
+						<id>84872</id>
+						<title>Good Old War</title>
+						<thumbnail>/jpg/rey528321c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>40389</id>
+						<title>Grooves &amp; Messages</title>
+						<thumbnail>/jpg/wem590321c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>110440</id>
+						<title>Deliver the Word</title>
+						<thumbnail>/jpg/wem104429c.jpg</thumbnail>
+						<year>1973</year>
+					</titleListItem>
+					<titleListItem>
+						<id>130364</id>
+						<title>Slave Ambient</title>
+						<thumbnail>/jpg/adm019024c.jpg</thumbnail>
+						<year>2011</year>
+					</titleListItem>
+					<titleListItem>
+						<id>97326</id>
+						<title>Arise and Conquer</title>
+						<thumbnail>/jpg/rmm107228c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>39262</id>
+						<title>All Day Music</title>
+						<thumbnail>/jpg/wem104221c.jpg</thumbnail>
+						<year>1971</year>
+					</titleListItem>
+					<titleListItem>
+						<id>38339</id>
+						<title>Cisco Kid and Other Hits, The</title>
+						<thumbnail>/jpg/wem529925c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>108934</id>
+						<title>Best of Eric Burdon &amp; War, The</title>
+						<thumbnail>/jpg/wem195427c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>32978</id>
+						<title>Fire From the Tomb</title>
+						<thumbnail>/jpg/rmm106122c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>114382</id>
+						<title>Eric Burdon Declares War</title>
+						<thumbnail>/jpg/wem105020c.jpg</thumbnail>
+						<year>1970</year>
+					</titleListItem>
+					<titleListItem>
+						<id>36981</id>
+						<title>Anthology (1970-1994)</title>
+						<thumbnail>/jpg/wem177423c.jpg</thumbnail>
+						<year>1970</year>
+					</titleListItem>
+					<titleListItem>
+						<id>77215</id>
+						<title>Behave Yourself (Ep)</title>
+						<thumbnail>/jpg/umm013429c.jpg</thumbnail>
+						<year>2009</year>
+					</titleListItem>
+					<titleListItem>
+						<id>63999</id>
+						<title>Wars And Rumors Of Wars</title>
+						<thumbnail>/jpg/emm438627c.jpg</thumbnail>
+						<year>2009</year>
+					</titleListItem>
+					<titleListItem>
+						<id>109853</id>
+						<title>War &amp; Peace Vol. 1: War (Parental Advisory)</title>
+						<thumbnail>/jpg/emm070026c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>38364</id>
+						<title>War Live!</title>
+						<thumbnail>/jpg/wem105228c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>67327</id>
+						<title>War Elephant</title>
+						<thumbnail>/jpg/alm022422c.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>111356</id>
+						<title>My War</title>
+						<thumbnail>/jpg/kom002323c.jpg</thumbnail>
+						<year>1984</year>
+					</titleListItem>
+					<titleListItem>
+						<id>69865</id>
+						<title>This Is War</title>
+						<thumbnail>/jpg/emm511121c.jpg</thumbnail>
+						<year>2009</year>
+					</titleListItem>
+					<titleListItem>
+						<id>113002</id>
+						<title>War Of Aggression</title>
+						<thumbnail>/jpg/rmm033023c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>12781</id>
+						<title>War (Remastered)</title>
+						<thumbnail>/jpg/umm646476c.jpg</thumbnail>
+						<year>1983</year>
+					</titleListItem>
+					<titleListItem>
+						<id>8235</id>
+						<title>Rap Declares War</title>
+						<thumbnail>/jpg/wem104023c.jpg</thumbnail>
+					</titleListItem>
+					<titleListItem>
+						<id>22494</id>
+						<title>War Stories</title>
+						<thumbnail>/jpg/rey001823c.jpg</thumbnail>
+					</titleListItem>
+				</list>
+			</entry>
+			<entry>
+				<string>Television</string>
+				<list>
+					<titleListItem>
+						<id>77454</id>
+						<title>Whale Wars Season 2</title>
+						<description>TV-14, 2009, Animal Planet</description>
+						<thumbnail>/jpg/lav0554663d.jpg</thumbnail>
+						<year>2009</year>
+					</titleListItem>
+					<titleListItem>
+						<id>76000</id>
+						<title>Border Wars - Season 1</title>
+						<description>NR, 2009, National Geographic</description>
+						<thumbnail>/jpg/ngons93153d.jpg</thumbnail>
+						<year>2009</year>
+					</titleListItem>
+					<titleListItem>
+						<id>27826</id>
+						<title>Parking Wars - Best Of Season 1</title>
+						<description>UNK, 2008, A&amp;E Home Video</description>
+						<thumbnail>/jpg/aae114830d.jpg</thumbnail>
+						<year>2008</year>
+					</titleListItem>
+					<titleListItem>
+						<id>126273</id>
+						<title>Firefly</title>
+						<description>UNK, 2003, 20th Century Fox</description>
+						<thumbnail>/jpg/eon222460002d.jpg</thumbnail>
+						<year>2003</year>
+					</titleListItem>
+				</list>
+			</entry>
+		</results>
+	</body>
+</message>
