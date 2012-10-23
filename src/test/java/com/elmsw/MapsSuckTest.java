@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class MapsSuckTest extends AbstractTestBase {
 
@@ -22,9 +23,12 @@ public class MapsSuckTest extends AbstractTestBase {
 		xppIO.addLocalAlias("entry", Entry.class);
 		xppIO.addLocalAlias("list", LinkedList.class);
 		xppIO.addLocalAlias("titleListItem", TitleListItem.class);
-		xppIO.populate(entryList, xml, "/message/body/results");
+
+		final List<Entry> populate = xppIO.populate(entryList, xml, "/message/body/results");
 
 		// verify behavior
+		assertTrue(populate == entryList);
+
 		System.out.println(entryList);
 
 		Map<String, List<TitleListItem>> map = new HashMap<String, List<TitleListItem>>();

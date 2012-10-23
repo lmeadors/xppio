@@ -152,13 +152,13 @@ public class XppIO {
 		return xml;
 	}
 
-	public Object populate(Object target, String xml) {
+	public <T> T populate(T target, String xml) {
 		return populate(target, xml, null);
 	}
 
-	public Object populate(Object target, String xml, String start) {
+	public <T> T populate(T target, String xml, String start) {
 
-		Object returnValue = null;
+		T returnValue = null;
 
 		try {
 			returnValue = populate(target, xmlAsNode(xml), start);
@@ -170,11 +170,11 @@ public class XppIO {
 
 	}
 
-	public Object populate(Object target, Node xml) {
+	public <T> T populate(T target, Node xml) {
 		return populate(target, xml, null);
 	}
 
-	public Object populate(Object target, Node xml, String start) {
+	public <T> T populate(T target, Node xml, String start) {
 		try {
 
 			final Class targetType = target.getClass();
