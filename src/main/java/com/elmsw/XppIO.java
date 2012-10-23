@@ -152,6 +152,10 @@ public class XppIO {
 		return xml;
 	}
 
+	public Object populate(Object target, String xml) {
+		return populate(target, xml, null);
+	}
+
 	public Object populate(Object target, String xml, String start) {
 
 		Object returnValue = null;
@@ -166,17 +170,27 @@ public class XppIO {
 
 	}
 
+	public Object populate(Object target, Node xml) {
+		return populate(target, xml, null);
+	}
+
 	public Object populate(Object target, Node xml, String start) {
 		try {
 
 			final Class targetType = target.getClass();
 
+			final Node root;
+			if (start != null) {
+				root = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
+			} else {
+				root = xml;
+			}
+
 			// if the target type is a collection, we need to get it's children, populate objects from them, and add
 			// them to the collection
 			if (Collection.class.isAssignableFrom(targetType)) {
 				log.debug("Type {} is a collection.", targetType);
-				Node node = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
-				NodeList list = node.getChildNodes();
+				NodeList list = root.getChildNodes();
 				final int nodeCount = list.getLength();
 				Collection<Object> targetCollection = (Collection<Object>) target;
 
@@ -190,9 +204,6 @@ public class XppIO {
 				}
 
 			} else {
-				// extract just the node we want from the expression the user provided
-				final Node root = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
-
 				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
 				// but it works for now...
 				final Field[] fields = getFields(targetType);
