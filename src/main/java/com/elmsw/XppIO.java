@@ -2,7 +2,7 @@ package com.elmsw;
 
 import com.elmsw.core.State;
 import com.elmsw.core.converters.*;
-import com.elmsw.core.exceptionhandlers.SilentFailure;
+import com.elmsw.core.exceptionhandlers.LogFailure;
 import com.elmsw.core.namingstrategies.PropertyNameStrategy;
 import com.elmsw.core.statefactory.SimpleStateFactory;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public class XppIO {
 	public XppIO() throws XmlPullParserException {
 		this(
 				XmlPullParserFactory.newInstance(),
-				new SilentFailure(),
+				new LogFailure(),
 				new PropertyNameStrategy(),
 				new SimpleStateFactory()
 		);
@@ -295,7 +295,10 @@ public class XppIO {
 			for (Field field : fields) {
 				log.debug("handling field {} of {}", field.getName(), objectClass);
 				field.setAccessible(true);
-				element.appendChild(buildElement(field.get(object), field.getName(), document));
+				final Object value = field.get(object);
+				if (null != value) {
+					element.appendChild(buildElement(value, field.getName(), document));
+				}
 			}
 		} else {
 			final String text = converter.asText(object, this);
@@ -344,13 +347,13 @@ public class XppIO {
 		if (aliasMap.containsValue(objectClass)) {
 			// crap, now i have to look this up
 			return findAlias(objectClass, aliasMap);
-		}else if(localAliasMap.get().containsValue(objectClass)){
+		} else if (localAliasMap.get().containsValue(objectClass)) {
 			return findAlias(objectClass, localAliasMap.get());
 		}
 		return namingStrategy.getElementName(object);
 	}
 
-	private String findAlias(Class type, Map<String, Class> map){
+	private String findAlias(Class type, Map<String, Class> map) {
 		for (String alias : map.keySet()) {
 			if (map.get(alias).equals(type)) {
 				return alias;

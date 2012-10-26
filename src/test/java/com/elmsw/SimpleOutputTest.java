@@ -2,7 +2,6 @@ package com.elmsw;
 
 import com.elmsw.beans.Account;
 import com.elmsw.beans.Customer;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -10,11 +9,10 @@ import static org.junit.Assert.assertEquals;
 
 public class SimpleOutputTest extends AbstractTestBase {
 
-	public static final String EXPECTED_CUSTOMER_XML = "<customer><id>123</id><name>Blah Industries</name></customer>";
-	public static final String EXPECTED_CUSTOMER_XML_WITH_ALIAS = "<myCustomer><id>123</id><name>Blah Industries</name></myCustomer>";
+	public static final String EXPECTED_CUSTOMER_XML = "<customer><id>123</id><name>Blah Industries</name><enabled>false</enabled></customer>";
+	public static final String EXPECTED_CUSTOMER_XML_WITH_ALIAS = "<myCustomer><id>123</id><name>Blah Industries</name><enabled>false</enabled></myCustomer>";
 	private static final String EXPECTED_ACCOUNT_XML_WITH_ALIAS = "<myAccount><id>234</id><name>Woot Account</name></myAccount>";
 
-	@Ignore
 	@Test
 	public void shouldCreateCustomerXml() throws XmlPullParserException {
 
@@ -31,7 +29,6 @@ public class SimpleOutputTest extends AbstractTestBase {
 
 	}
 
-	@Ignore
 	@Test
 	public void shouldCreateXmlUsingAlias() throws Exception {
 
