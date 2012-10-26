@@ -1,10 +1,7 @@
 package com.elmsw;
 
 import com.elmsw.core.State;
-import com.elmsw.core.converters.IntegerConverter;
-import com.elmsw.core.converters.ListConverter;
-import com.elmsw.core.converters.ReflectionConverter;
-import com.elmsw.core.converters.StringConverter;
+import com.elmsw.core.converters.*;
 import com.elmsw.core.exceptionhandlers.SilentFailure;
 import com.elmsw.core.namingstrategies.PropertyNameStrategy;
 import com.elmsw.core.statefactory.SimpleStateFactory;
@@ -72,6 +69,8 @@ public class XppIO {
 
 		converterMap.put(String.class, new StringConverter());
 		converterMap.put(Integer.class, new IntegerConverter());
+		converterMap.put(Boolean.class, new BooleanConverter());
+		converterMap.put(boolean.class, new BooleanConverter());
 		converterMap.put(List.class, new ListConverter());
 
 		localAliasMap.set(new HashMap<String, Class>());

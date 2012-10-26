@@ -10,7 +10,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class SimpleObjectTest extends AbstractTestBase {
 
-	final String input = "<customer><id>123</id><name>Joe's Garage</name></customer>";
+	final private String input = "<customer><id>123</id><name>Joe's Garage</name></customer>";
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {
@@ -60,5 +60,25 @@ public class SimpleObjectTest extends AbstractTestBase {
 		assertPropertiesAreEqual(expectedCustomer, actualCustomer);
 
 	}
+
+	@Test
+	public void shouldPopulateCustomer() throws Exception {
+
+		// setup test
+		final String input = "<customer><id>123</id><name>Joe's Garage</name><description>yay me</description><enabled>true</enabled></customer>";
+		final Customer expected = new Customer(123, "Joe's Garage");
+		expected.setDescription("yay me");
+		expected.setEnabled(true);
+
+		// run test
+		final Customer actual = xppIO.populate(new Customer(), input);
+
+		// verify behavior
+		System.out.println(actual);
+
+		assertPropertiesAreEqual(expected, actual);
+
+	}
+
 
 }

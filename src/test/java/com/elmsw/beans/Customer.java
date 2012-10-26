@@ -6,6 +6,8 @@ public class Customer {
 
 	private Integer id;
 	private String name;
+	private String description;
+	private boolean enabled;
 
 	public Customer() {
 	}
@@ -13,6 +15,11 @@ public class Customer {
 	public Customer(Integer id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	public Integer getId() {
@@ -31,9 +38,20 @@ public class Customer {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

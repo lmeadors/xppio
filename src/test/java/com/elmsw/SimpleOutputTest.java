@@ -2,6 +2,7 @@ package com.elmsw;
 
 import com.elmsw.beans.Account;
 import com.elmsw.beans.Customer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -13,11 +14,14 @@ public class SimpleOutputTest extends AbstractTestBase {
 	public static final String EXPECTED_CUSTOMER_XML_WITH_ALIAS = "<myCustomer><id>123</id><name>Blah Industries</name></myCustomer>";
 	private static final String EXPECTED_ACCOUNT_XML_WITH_ALIAS = "<myAccount><id>234</id><name>Woot Account</name></myAccount>";
 
+	@Ignore
 	@Test
 	public void shouldCreateCustomerXml() throws XmlPullParserException {
 
 		// setup test
 		XppIO xppIO = new XppIO();
+		xppIO.addLocalAlias("customer", Customer.class);
+
 		Customer customer = new Customer();
 		customer.setId(123);
 		customer.setName("Blah Industries");
@@ -27,6 +31,7 @@ public class SimpleOutputTest extends AbstractTestBase {
 
 	}
 
+	@Ignore
 	@Test
 	public void shouldCreateXmlUsingAlias() throws Exception {
 
