@@ -176,6 +176,9 @@ public class XppIO {
 	public <T> T populate(T target, Node xml, String start) {
 		try {
 
+			// clean up the document
+			xml.normalize();
+
 			final Class targetType = target.getClass();
 
 			final Node root;
@@ -202,6 +205,28 @@ public class XppIO {
 					}
 				}
 
+			} else if (Map.class.isAssignableFrom(targetType)) {
+				// the assumption we make is that the Map when represented as xml will have a list of nodes. Each of
+				// those nodes will have 2 children - the first is the key, and the second the value
+				Map<Object, Object> map = (Map<Object, Object>) target;
+				final NodeList nodeList = root.getChildNodes();
+				for (int i = 0; i < nodeList.getLength(); i++) {
+					final Node mapEntryNode = nodeList.item(i);
+					mapEntryNode.normalize();
+					log.debug("creating map entry from node:\n{}", nodeToString(mapEntryNode));
+					if (null != mapEntryNode.getChildNodes() && mapEntryNode.getChildNodes().getLength() > 2) {
+						// OK, there are 2 nodes so we need to get them and map them
+						final Node entryKeyNode = nonEmptyChild(mapEntryNode, 0);   // mapEntryNode.getChildNodes().item(0);
+						final Node entryValueNode = nonEmptyChild(mapEntryNode, 1); // mapEntryNode.getChildNodes().item(1);
+						final String keyXml = nodeToString(entryKeyNode).trim();
+						final String valueXml = nodeToString(entryValueNode).trim();
+						log.debug("mapping key from:\n{}", keyXml);
+						final Object key = toObject(keyXml);
+						log.debug("mapping value from:\n{}", valueXml);
+						final Object value = toObject(valueXml);
+						map.put(key, value);
+					}
+				}
 			} else {
 				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
 				// but it works for now...
@@ -251,6 +276,20 @@ public class XppIO {
 			exceptionHandler.handle(e);
 		}
 		return target;
+	}
+
+	private Node nonEmptyChild(Node container, int skip) throws TransformerException {
+		for (int i = 0; i < container.getChildNodes().getLength(); i++) {
+			final Node node = container.getChildNodes().item(i);
+			node.normalize();
+			if (!nodeToString(node).trim().isEmpty()) {
+				if (skip <= 0) {
+					return node;
+				}
+				skip--;
+			}
+		}
+		return null;
 	}
 
 	private Field[] getFields(Class targetType) {

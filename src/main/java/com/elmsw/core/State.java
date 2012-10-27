@@ -89,12 +89,12 @@ public class State {
 		} catch (NoSuchFieldException e) {
 			log.debug("field '{}' does not exist on {}", new Object[]{propertyName, targetClass});
 			// ok the field doesn't exist - is this a collection that we want to add an item to?
-			if(List.class.isAssignableFrom(targetClass)){
+			if (List.class.isAssignableFrom(targetClass)) {
 				log.debug("{} is a List", targetClass);
 				// oh, it's a list - add
 				List list = (List) target;
 				list.add(value);
-			}else{
+			} else {
 				log.debug("{} NOT is a List", targetClass);
 
 			}
@@ -104,23 +104,42 @@ public class State {
 	}
 
 	public void processText(XmlPullParser xpp, XppIO xppIO) throws IllegalAccessException, NoSuchFieldException {
+
 		final String text = xpp.getText();
+
 		if (!text.trim().isEmpty()) {
+
 			log.debug("processing text: '{}'", text);
+
 			final Object pop = stack.pop();
 			log.debug("popped {} from stack", pop);
-			final Object currentObject = stack.peek();
-			log.debug("setting {} to '{}' on {} ({})", new Object[]{nextPropertyName, text, currentObject, currentObject.getClass()});
-			try {
-				final Class aClass = currentObject.getClass();
-				final Field field = aClass.getDeclaredField(nextPropertyName);
-				field.setAccessible(true);
-				setFieldValue(field, text, currentObject, xppIO);
-			} catch (Exception e) {
-				exceptionHandler.handle(e);
+
+			final Object currentObject;
+			if (rootObject != pop) {
+				currentObject = stack.peek();
+			} else {
+				currentObject = null;
 			}
-			log.debug("pushing {} on to stack", pop);
-			stack.push(pop);
+
+			//
+			if (currentObject == null) {
+				// we're mapping the root node now
+				final Converter converter = xppIO.getConverterForClass(pop.getClass());
+				rootObject = converter.fromString(text);
+				stack.push(rootObject);
+			} else {
+				log.debug("setting {} to '{}' on {} ({})", new Object[]{nextPropertyName, text, currentObject, currentObject.getClass()});
+				try {
+					final Class objectClass = currentObject.getClass();
+					final Field field = objectClass.getDeclaredField(nextPropertyName);
+					field.setAccessible(true);
+					setFieldValue(field, text, currentObject, xppIO);
+				} catch (Exception e) {
+					exceptionHandler.handle(e);
+				}
+				log.debug("pushing {} on to stack", pop);
+				stack.push(pop);
+			}
 		}
 	}
 
