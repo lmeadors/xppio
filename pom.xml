@@ -4,7 +4,7 @@
 
 	<groupId>com.elmsw</groupId>
 	<artifactId>xppio</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>xppio</name>
@@ -97,7 +97,31 @@
 					<check/>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>dillonsoftware.release</id>
+			<name>dillonsoftware-releases</name>
+			<url>scp://maven.dillonsoftware.com/var/www/maven/repo/</url>
+		</repository>
+		<snapshotRepository>
+			<id>dillonsoftware.snapshots</id>
+			<name>dillonsoftware-snapshots</name>
+			<url>scp://maven.dillonsoftware.com/var/www/maven/snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
