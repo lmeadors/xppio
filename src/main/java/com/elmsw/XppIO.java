@@ -86,6 +86,16 @@ public class XppIO {
 		);
 	}
 
+	public <T> T toObject(Node node) {
+		T returnValue = null;
+		try {
+			returnValue = toObject(nodeToString(node));
+		} catch (TransformerException e) {
+			exceptionHandler.handle(e);
+		}
+		return returnValue;
+	}
+
 	public <T> T toObject(String input) {
 
 		final XmlPullParser xpp;
