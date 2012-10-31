@@ -72,6 +72,7 @@ public class XppIO {
 		converterMap.put(Boolean.class, new BooleanConverter());
 		converterMap.put(boolean.class, new BooleanConverter());
 		converterMap.put(List.class, new ListConverter());
+		converterMap.put(Date.class, new DateConverter());
 
 		localAliasMap.set(new HashMap<String, Class>());
 
