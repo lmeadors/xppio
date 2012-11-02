@@ -2,13 +2,6 @@ package com.elmsw.beans;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-/**
-* Created with IntelliJ IDEA.
-* User: lmeadors
-* Date: 10/12/12
-* Time: 5:55 AM
-* To change this template use File | Settings | File Templates.
-*/
 public class StringCustomer {
 	private String id;
 	private String name;

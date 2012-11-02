@@ -5,12 +5,16 @@ import com.elmsw.beans.MyCustomerIsCoolerThanYours;
 import com.elmsw.beans.StringCustomer;
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class SimpleObjectTest extends AbstractTestBase {
 
-	final private String input = "<customer><id>123</id><name>Joe's Garage</name></customer>";
+	final private String input = "<customer><id>123</id><name>Joe's Garage</name><created>12/31/12</created></customer>";
+	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>Tuesday, January 16, 2007</created></customer>";
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {
@@ -33,7 +37,9 @@ public class SimpleObjectTest extends AbstractTestBase {
 	public void shouldImportSimpleBeanWithMixedTypes() throws Exception {
 
 		// setup test
-		Customer expectedCustomer = new Customer(123, "Joe's Garage");
+		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT);
+		Date date = format.parse("12/31/12");
+		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
 		xppIO.addAlias("customer", Customer.class);
 
 		// run test
@@ -43,7 +49,27 @@ public class SimpleObjectTest extends AbstractTestBase {
 		assertNotNull(actualCustomer);
 		assertEquals(expectedCustomer.getId(), actualCustomer.getId());
 		assertEquals(expectedCustomer.getName(), actualCustomer.getName());
+		assertEquals(expectedCustomer.getCreated(), actualCustomer.getCreated());
+	}
 
+	@Test
+	public void shouldImportSimpleBeanWithMixedTypesWithFullDateFormat() throws Exception {
+
+		DateFormat format = DateFormat.getDateInstance(DateFormat.FULL);
+		Date date = format.parse("Tuesday, January 16, 2007");
+
+		// setup test
+		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
+		xppIO.addAlias("customer", Customer.class);
+
+		// run test
+		final Customer actualCustomer = xppIO.toObject(inputWithLongDate);
+
+		// verify behavior
+		assertNotNull(actualCustomer);
+		assertEquals(expectedCustomer.getId(), actualCustomer.getId());
+		assertEquals(expectedCustomer.getName(), actualCustomer.getName());
+		assertEquals(expectedCustomer.getCreated(), actualCustomer.getCreated());
 	}
 
 	@Test
