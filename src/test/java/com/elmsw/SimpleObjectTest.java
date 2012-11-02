@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 public class SimpleObjectTest extends AbstractTestBase {
 
 	final private String input = "<customer><id>123</id><name>Joe's Garage</name><created>12/31/12</created></customer>";
-	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>January 12, 1952</created></customer>";
+	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>Tuesday, January 16, 2007</created></customer>";
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {
@@ -53,10 +53,10 @@ public class SimpleObjectTest extends AbstractTestBase {
 	}
 
 	@Test
-	public void shouldImportSimpleBeanWithMixedTypesWithLongDateFormat() throws Exception {
+	public void shouldImportSimpleBeanWithMixedTypesWithFullDateFormat() throws Exception {
 
-		DateFormat format = DateFormat.getDateInstance(DateFormat.LONG);
-		Date date = format.parse("January 12, 1952");
+		DateFormat format = DateFormat.getDateInstance(DateFormat.FULL);
+		Date date = format.parse("Tuesday, January 16, 2007");
 
 		// setup test
 		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
