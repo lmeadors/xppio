@@ -434,6 +434,10 @@ public class XppIO {
 
 	}
 
+	public void addConverter(Class<?> type, Converter<?> converter) {
+		converterMap.put(type, converter);
+	}
+
 	public void addLocalAlias(String alias, Class<?> type) {
 		localAliasMap.get().put(alias, type);
 	}
