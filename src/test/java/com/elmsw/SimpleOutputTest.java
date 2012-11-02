@@ -5,24 +5,32 @@ import com.elmsw.beans.Customer;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 
 public class SimpleOutputTest extends AbstractTestBase {
 
-	public static final String EXPECTED_CUSTOMER_XML = "<customer><id>123</id><name>Blah Industries</name><enabled>false</enabled></customer>";
+	public static final String EXPECTED_CUSTOMER_XML = "<customer><id>123</id><name>Blah Industries</name><enabled>false</enabled><created>12/31/12</created></customer>";
 	public static final String EXPECTED_CUSTOMER_XML_WITH_ALIAS = "<myCustomer><id>123</id><name>Blah Industries</name><enabled>false</enabled></myCustomer>";
 	private static final String EXPECTED_ACCOUNT_XML_WITH_ALIAS = "<myAccount><id>234</id><name>Woot Account</name></myAccount>";
 
 	@Test
-	public void shouldCreateCustomerXml() throws XmlPullParserException {
+	public void shouldCreateCustomerXml() throws XmlPullParserException, ParseException {
 
 		// setup test
 		XppIO xppIO = new XppIO();
 		xppIO.addLocalAlias("customer", Customer.class);
 
+		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT);
+		Date date = format.parse("12/31/12");
+
 		Customer customer = new Customer();
 		customer.setId(123);
 		customer.setName("Blah Industries");
+		customer.setCreated(date);
 
 		// run test and verify behavior
 		assertEquals(EXPECTED_CUSTOMER_XML, xppIO.toXml(customer));

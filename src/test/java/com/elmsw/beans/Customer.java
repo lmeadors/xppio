@@ -2,19 +2,27 @@ package com.elmsw.beans;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Date;
+
 public class Customer {
 
 	private Integer id;
 	private String name;
 	private String description;
 	private boolean enabled;
+	private Date created;
 
 	public Customer() {
 	}
 
 	public Customer(Integer id, String name) {
+		this(id, name, null);
+	}
+
+	public Customer(Integer id, String name, Date created) {
 		this.id = id;
 		this.name = name;
+		this.created = created;
 	}
 
 	@Override
@@ -54,4 +62,11 @@ public class Customer {
 		this.enabled = enabled;
 	}
 
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
 }
