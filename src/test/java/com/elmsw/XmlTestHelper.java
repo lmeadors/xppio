@@ -55,6 +55,10 @@ public class XmlTestHelper {
 		return documentBuilder.parse(new ByteArrayInputStream(source.getBytes()));
 	}
 
+	public Node xPathQueryForNode(Node document, String query) throws Exception {
+		return (Node) getStringAsXPathExpression(query).evaluate(document, XPathConstants.NODE);
+	}
+
 	public String xPathQuery(Node document, String query) throws Exception {
 		return getStringAsXPathExpression(query).evaluate(document);
 	}

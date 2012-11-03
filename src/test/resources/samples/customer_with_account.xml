@@ -5,4 +5,6 @@
 		<id>234</id>
 		<name>Blah Sales</name>
 	</account>
+	<description>yay me</description>
+	<enabled>true</enabled>
 </customer>

@@ -3,35 +3,33 @@ package com.elmsw;
 import com.elmsw.beans.Customer;
 import com.elmsw.beans.MyCustomerIsCoolerThanYours;
 import com.elmsw.beans.StringCustomer;
-import com.elmsw.core.converters.DateConverter;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class SimpleObjectTest extends AbstractTestBase {
 
-	final private String input = "<customer><id>123</id><name>Joe's Garage</name><created>2012-12-31 00:00:00.0 UTC</created></customer>";
-	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>2012-12-31 00:00:00.0 UTC</created></customer>";
+	private String input;
+
+	@Before
+	public void beforeSimpleObjectTest() throws IOException {
+		input = resourceAsString("samples/customer.xml");
+	}
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {
 
 		// setup test
+		StringCustomer expected = new StringCustomer("123", "Joe's Garage");
 		xppIO.addAlias("customer", StringCustomer.class);
-		StringCustomer expectedCustomer = new StringCustomer("123", "Joe's Garage");
 
 		// run test
-		final StringCustomer actualCustomer = xppIO.toObject(input);
+		final StringCustomer actual = xppIO.toObject(input);
 
 		// verify behavior
-		assertNotNull(actualCustomer);
-		assertEquals(expectedCustomer.getId(), actualCustomer.getId());
-		assertEquals(expectedCustomer.getName(), actualCustomer.getName());
+		assertPropertiesAreEqual(expected, actual);
 
 	}
 
@@ -39,62 +37,38 @@ public class SimpleObjectTest extends AbstractTestBase {
 	public void shouldImportSimpleBeanWithMixedTypes() throws Exception {
 
 		// setup test
-		DateFormat format = new SimpleDateFormat(DateConverter.PATTERN);
-		Date date = format.parse("2012-12-31 00:00:00.0 GMT");
-		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
+		Date date = getDateUsingDefaultFormat("2012-12-31 00:00:00.0 GMT");
+		Customer expected = new Customer(123, "Joe's Garage", date);
 		xppIO.addAlias("customer", Customer.class);
 
 		// run test
-		final Customer actualCustomer = xppIO.toObject(input);
+		final Customer actual = xppIO.toObject(input);
 
 		// verify behavior
-		assertNotNull(actualCustomer);
-		assertEquals(expectedCustomer.getId(), actualCustomer.getId());
-		assertEquals(expectedCustomer.getName(), actualCustomer.getName());
-		assertEquals(expectedCustomer.getCreated(), actualCustomer.getCreated());
-	}
+		assertPropertiesAreEqual(expected, actual);
 
-	@Test
-	public void shouldImportSimpleBeanWithMixedTypesWithFullDateFormat() throws Exception {
-
-		DateFormat format = new SimpleDateFormat(DateConverter.PATTERN);
-		Date date = format.parse("2012-12-31 00:00:00.0 GMT");
-
-		// setup test
-		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
-		xppIO.addAlias("customer", Customer.class);
-
-		// run test
-		final Customer actualCustomer = xppIO.toObject(inputWithLongDate);
-
-		// verify behavior
-		assertNotNull(actualCustomer);
-		assertEquals(expectedCustomer.getId(), actualCustomer.getId());
-		assertEquals(expectedCustomer.getName(), actualCustomer.getName());
-		assertEquals(expectedCustomer.getCreated(), actualCustomer.getCreated());
 	}
 
 	@Test
 	public void shouldMapCustomerToExistingObjectWithoutAlias() throws Exception {
 
 		// setup test
-		MyCustomerIsCoolerThanYours expectedCustomer = new MyCustomerIsCoolerThanYours(123, "Joe's Garage");
+		MyCustomerIsCoolerThanYours expected = new MyCustomerIsCoolerThanYours(123, "Joe's Garage");
 
 		// run test
-		final MyCustomerIsCoolerThanYours actualCustomer = new MyCustomerIsCoolerThanYours();
-		xppIO.populate(actualCustomer, input, "/customer");
+		final MyCustomerIsCoolerThanYours actual = xppIO.populate(new MyCustomerIsCoolerThanYours(), input, "/customer");
 
 		// verify behavior
-		assertPropertiesAreEqual(expectedCustomer, actualCustomer);
+		assertPropertiesAreEqual(expected, actual);
 
 	}
 
 	@Test
-	public void shouldPopulateCustomer() throws Exception {
+	public void shouldPopulateCustomerEvenWithExtraJunk() throws Exception {
 
 		// setup test
-		final String input = "<customer><id>123</id><name>Joe's Garage</name><description>yay me</description><enabled>true</enabled></customer>";
-		final Customer expected = new Customer(123, "Joe's Garage");
+		final String input = resourceAsString("samples/customer_with_account.xml");
+		final Customer expected = new Customer(123, "Blah Inc.");
 		expected.setDescription("yay me");
 		expected.setEnabled(true);
 
@@ -102,8 +76,6 @@ public class SimpleObjectTest extends AbstractTestBase {
 		final Customer actual = xppIO.populate(new Customer(), input);
 
 		// verify behavior
-		System.out.println(actual);
-
 		assertPropertiesAreEqual(expected, actual);
 
 	}

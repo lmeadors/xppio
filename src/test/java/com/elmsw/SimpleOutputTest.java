@@ -26,7 +26,7 @@ public class SimpleOutputTest extends AbstractTestBase {
 		XppIO xppIO = new XppIO();
 		xppIO.addAlias("customer", Customer.class);
 
-		final SimpleDateFormat format = new SimpleDateFormat(DateConverter.PATTERN);
+		final SimpleDateFormat format = new SimpleDateFormat(DateConverter.DEFAULT_DATE_FORMAT);
 		Date date = format.parse("2012-12-31 12:00:00.0 UTC");
 
 		Customer customer = new Customer();

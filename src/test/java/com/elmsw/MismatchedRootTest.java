@@ -2,17 +2,17 @@ package com.elmsw;
 
 import com.elmsw.beans.*;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MismatchedRootTest extends AbstractTestBase {
+import static org.junit.Assert.assertEquals;
 
-	private static final Logger log = LoggerFactory.getLogger(MismatchedRootTest.class);
+public class MismatchedRootTest extends AbstractTestBase {
 
 	@Test
 	public void shouldPopulateExistingObjectWithFragmentContents() throws Exception {
@@ -38,12 +38,10 @@ public class MismatchedRootTest extends AbstractTestBase {
 	}
 
 	@Test
-	public void shouldPopulateComplexNestedObject() throws Exception {
+	public void shouldPopulateComplexNestedObjects() throws Exception {
 
 		// this is the xml we are dealing with
 		final String xml = resourceAsString("samples/madness.xml");
-
-//		xppIO.addAlias("account", Account.class);
 
 		// this is what we expect to extract from the xml
 		final Account expectedAccount = new Account();
@@ -78,6 +76,8 @@ public class MismatchedRootTest extends AbstractTestBase {
 		final CustomerWithAccount expected = new CustomerWithAccount();
 		expected.setId(123);
 		expected.setName("Blah Inc.");
+		expected.setDescription("yay me");
+		expected.setEnabled(true);
 		expected.setAccount(expectedAccount);
 
 		xppIO.addAlias("account", Account.class);
@@ -87,14 +87,10 @@ public class MismatchedRootTest extends AbstractTestBase {
 		final CustomerWithAccount actual = xppIO.toObject(xml);
 
 		// verify behavior
-		System.out.println("*" + xppIO.toXml(expected));
-		System.out.println("*" + xppIO.toXml(actual));
-
 		assertPropertiesAreEqual(expected, actual, "account");
 		assertPropertiesAreEqual(expected.getAccount(), actual.getAccount());
 
 	}
-
 
 	@Test
 	public void shouldBeAbleToDoWeirdFragmentMapping() throws Exception {
@@ -128,27 +124,32 @@ public class MismatchedRootTest extends AbstractTestBase {
 	}
 
 	@Test
-	public void shouldMapNodeListToCollection() throws IOException {
+	public void shouldMapNodeListToCollection() throws Exception {
 
 		// setup test
 		final String xml = resourceAsString("samples/embedded_order.xml");
-
-		// need some hints here to construct the list items
-		xppIO.addAlias("lineItem", LineItem.class);
-		xppIO.addAlias("lineItemList", ArrayList.class);
+		final Order expected = new Order(1);
+		expected.addLineItem(new LineItem(1, 1, 3, 4));
+		expected.addLineItem(new LineItem(2, 1, 4, 5));
+		expected.addLineItem(new LineItem(3, 1, 5, 6));
 
 		// run test
-		final Order order = new Order();
-		xppIO.populate(order, xml, "/envelope/body/order");
+		xppIO.addAlias("lineItem", LineItem.class);
+		xppIO.addAlias("lineItemList", ArrayList.class);
+		final Order actual = xppIO.populate(new Order(), xml, "/envelope/body/order");
 
 		// verify behavior
-		log.debug("order: {}", order);
-		log.debug("order as xml:\n{}", xppIO.toXml(order));
+		assertPropertiesAreEqual(expected, actual, "lineItemList");
+		assertEquals("both orders should have the same number of line items", expected.getLineItemList().size(), actual.getLineItemList().size());
+		for (int i = 0; i < expected.getLineItemList().size(); i++) {
+			assertPropertiesAreEqual(expected.getLineItemList().get(i), actual.getLineItemList().get(i));
+		}
 
 	}
 
 	@Test
 	public void shouldExtractJustListFromDocument() throws IOException {
+
 		// setup test
 		final String xml = resourceAsString("samples/embedded_order.xml");
 		List<LineItem> itemList = new LinkedList<LineItem>();
@@ -158,7 +159,45 @@ public class MismatchedRootTest extends AbstractTestBase {
 		xppIO.populate(itemList, xml, "/envelope/body/order/lineItemList");
 
 		// verify behavior
-		System.out.println(itemList);
+		assertEquals("should have 3 line items", 3, itemList.size());
+		assertEquals("first line is for product 3", 3, itemList.get(0).getProductId().intValue());
+		assertEquals("second line is for product 4", 4, itemList.get(1).getProductId().intValue());
+		assertEquals("third line is for product 5", 5, itemList.get(2).getProductId().intValue());
+
+	}
+
+	@Test
+	public void shouldMapNodeToObject() throws Exception {
+
+		// setup test
+		final Document document = xmlTestHelper.stringToDocument(resourceAsString("samples/embedded_order.xml"));
+		final Node node = xmlTestHelper.xPathQueryForNode(document, "/envelope/body/order/lineItemList/lineItem[1]");
+		LineItem expected = new LineItem(1, 1, 3, 4);
+
+		// run test
+		xppIO.addAlias("lineItem", LineItem.class);
+		LineItem actual = xppIO.toObject(node);
+
+		// verify behavior
+		assertPropertiesAreEqual(expected, actual);
+
+	}
+
+	@Test
+	public void shouldPopulateObjectFromNode() throws Exception {
+
+		// setup test
+		final Document document = xmlTestHelper.stringToDocument(resourceAsString("samples/embedded_order.xml"));
+		final Node node = xmlTestHelper.xPathQueryForNode(document, "/envelope/body/order/lineItemList/lineItem[1]");
+		LineItem expected = new LineItem(1, 1, 3, 4);
+
+		// run test
+		xppIO.addAlias("lineItem", LineItem.class);
+		LineItem actual = xppIO.populate(new LineItem(), node);
+
+		// verify behavior
+		assertPropertiesAreEqual(expected, actual);
+
 	}
 
 }

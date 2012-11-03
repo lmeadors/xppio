@@ -1,5 +1,6 @@
 package com.elmsw;
 
+import com.elmsw.core.converters.DateConverter;
 import com.elmsw.core.namingstrategies.PropertyNameStrategy;
 import com.elmsw.core.statefactory.SimpleStateFactory;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -14,6 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
@@ -81,6 +85,10 @@ public abstract class AbstractTestBase {
 		final String returnValue = new String(outputStream.toByteArray());
 		log.debug(returnValue);
 		return returnValue;
+	}
+
+	protected Date getDateUsingDefaultFormat(String date) throws ParseException {
+		return new SimpleDateFormat(DateConverter.DEFAULT_DATE_FORMAT).parse(date);
 	}
 
 }
