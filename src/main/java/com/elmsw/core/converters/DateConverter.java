@@ -3,36 +3,28 @@ package com.elmsw.core.converters;
 import com.elmsw.Converter;
 import com.elmsw.XppIO;
 
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Pattern;
 
 public class DateConverter extends NoOpConverter<Date> implements Converter<Date> {
 
-	public static int[] dateFormats = { DateFormat.SHORT, DateFormat.MEDIUM, DateFormat.LONG, DateFormat.FULL };
+	public static final String PATTERN = "yyyy-MM-dd HH:mm:ss.S z";
 
 	@Override
 	public String asText(Date object, XppIO xppIO) {
-		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT);
-		return format.format(object);
+		return new SimpleDateFormat(PATTERN).format(object);
 	}
 
 	@Override
 	public Date fromString(String value) {
-		Date date = null;
-		for (int dateFormat : dateFormats) {
-			DateFormat format = DateFormat.getDateInstance(dateFormat);
 
-			try {
-				date = format.parse(value);
-				break;
-			} catch (ParseException e) {
-				// continue to the next formatter
-			}
+		try {
+			return new SimpleDateFormat(PATTERN).parse(value);
+		} catch (ParseException e) {
+			throw new RuntimeException(e.toString(), e);
 		}
 
-		return date;
 	}
 
 }

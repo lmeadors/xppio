@@ -23,6 +23,7 @@ public abstract class AbstractTestBase {
 
 	protected XppIO xppIO;
 	protected final XmlPullParserFactory xmlPullParserFactory;
+	protected XmlTestHelper xmlTestHelper = new XmlTestHelper();
 
 	public AbstractTestBase() {
 		try {

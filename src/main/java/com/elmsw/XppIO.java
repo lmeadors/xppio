@@ -44,7 +44,6 @@ public class XppIO {
 	private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 	final private Map<String, Class> aliasMap = new HashMap<String, Class>();
-	private static final ThreadLocal<Map<String, Class>> localAliasMap = new ThreadLocal<Map<String, Class>>();
 
 	final private Converter reflectionConverter = new ReflectionConverter();
 
@@ -73,8 +72,6 @@ public class XppIO {
 		converterMap.put(boolean.class, new BooleanConverter());
 		converterMap.put(List.class, new ListConverter());
 		converterMap.put(Date.class, new DateConverter());
-
-		localAliasMap.set(new HashMap<String, Class>());
 
 	}
 
@@ -397,8 +394,6 @@ public class XppIO {
 		if (aliasMap.containsValue(objectClass)) {
 			// crap, now i have to look this up
 			return findAlias(objectClass, aliasMap);
-		} else if (localAliasMap.get().containsValue(objectClass)) {
-			return findAlias(objectClass, localAliasMap.get());
 		}
 		return namingStrategy.getElementName(object);
 	}
@@ -438,10 +433,6 @@ public class XppIO {
 		converterMap.put(type, converter);
 	}
 
-	public void addLocalAlias(String alias, Class<?> type) {
-		localAliasMap.get().put(alias, type);
-	}
-
 	public void addAlias(String alias, Class<?> type) {
 		aliasMap.put(alias, type);
 	}
@@ -452,8 +443,6 @@ public class XppIO {
 
 		if (aliasMap.containsKey(elementName)) {
 			nextType = aliasMap.get(elementName);
-		} else if (localAliasMap.get().containsKey(elementName)) {
-			nextType = localAliasMap.get().get(elementName);
 		} else {
 			nextType = defaultType;
 		}

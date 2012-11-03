@@ -23,10 +23,10 @@ public class MapMappingTest extends AbstractTestBase {
 
 		// run test
 		final Map<String, List<TitleListItem>> mapOfLists = new HashMap<String, List<TitleListItem>>();
-		xppIO.addLocalAlias("string", String.class);
-		xppIO.addLocalAlias("list", LinkedList.class);
-		xppIO.addLocalAlias("titleListItem", TitleListItem.class);
-		xppIO.addLocalAlias("results", HashMap.class);
+		xppIO.addAlias("string", String.class);
+		xppIO.addAlias("list", LinkedList.class);
+		xppIO.addAlias("titleListItem", TitleListItem.class);
+		xppIO.addAlias("results", HashMap.class);
 
 		// the assumption we make is that the Map when represented as xml will have a list of nodes. Each of those
 		// nodes will have 2 children - the first child will be used as the key, and the second as the value
@@ -61,7 +61,7 @@ public class MapMappingTest extends AbstractTestBase {
 
 		// setup test
 		String input = "<string>blah</string>";
-		xppIO.addLocalAlias("string", String.class);
+		xppIO.addAlias("string", String.class);
 
 		// run test
 		final String output = xppIO.toObject(input);

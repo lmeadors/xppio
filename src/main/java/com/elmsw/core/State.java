@@ -131,7 +131,7 @@ public class State {
 				log.debug("setting {} to '{}' on {} ({})", new Object[]{nextPropertyName, text, currentObject, currentObject.getClass()});
 				try {
 					final Class objectClass = currentObject.getClass();
-					final Field field = objectClass.getDeclaredField(nextPropertyName);
+					final Field field = getField(objectClass, nextPropertyName);
 					field.setAccessible(true);
 					setFieldValue(field, text, currentObject, xppIO);
 				} catch (Exception e) {
@@ -141,6 +141,25 @@ public class State {
 				stack.push(pop);
 			}
 		}
+	}
+
+	private Field getField(Class objectClass, String name) {
+
+		Field field = null;
+
+		try {
+			field = objectClass.getDeclaredField(name);
+		} catch (NoSuchFieldException e) {
+			exceptionHandler.handle(e);
+		}
+
+		if (field == null) {
+			if (!Object.class.equals(objectClass)) {
+				field = getField(objectClass.getSuperclass(), name);
+			}
+		}
+
+		return field;
 	}
 
 	private void setFieldValue(Field field, Object value, Object object, XppIO xppIO) throws IllegalAccessException {

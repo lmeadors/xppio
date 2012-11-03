@@ -3,9 +3,11 @@ package com.elmsw;
 import com.elmsw.beans.Customer;
 import com.elmsw.beans.MyCustomerIsCoolerThanYours;
 import com.elmsw.beans.StringCustomer;
+import com.elmsw.core.converters.DateConverter;
 import org.junit.Test;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -13,8 +15,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class SimpleObjectTest extends AbstractTestBase {
 
-	final private String input = "<customer><id>123</id><name>Joe's Garage</name><created>12/31/12</created></customer>";
-	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>Tuesday, January 16, 2007</created></customer>";
+	final private String input = "<customer><id>123</id><name>Joe's Garage</name><created>2012-12-31 00:00:00.0 UTC</created></customer>";
+	final private String inputWithLongDate = "<customer><id>123</id><name>Joe's Garage</name><created>2012-12-31 00:00:00.0 UTC</created></customer>";
 
 	@Test
 	public void shouldImportSimpleBeanWithStrings() throws Exception {
@@ -37,8 +39,8 @@ public class SimpleObjectTest extends AbstractTestBase {
 	public void shouldImportSimpleBeanWithMixedTypes() throws Exception {
 
 		// setup test
-		DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT);
-		Date date = format.parse("12/31/12");
+		DateFormat format = new SimpleDateFormat(DateConverter.PATTERN);
+		Date date = format.parse("2012-12-31 00:00:00.0 GMT");
 		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);
 		xppIO.addAlias("customer", Customer.class);
 
@@ -55,8 +57,8 @@ public class SimpleObjectTest extends AbstractTestBase {
 	@Test
 	public void shouldImportSimpleBeanWithMixedTypesWithFullDateFormat() throws Exception {
 
-		DateFormat format = DateFormat.getDateInstance(DateFormat.FULL);
-		Date date = format.parse("Tuesday, January 16, 2007");
+		DateFormat format = new SimpleDateFormat(DateConverter.PATTERN);
+		Date date = format.parse("2012-12-31 00:00:00.0 GMT");
 
 		// setup test
 		Customer expectedCustomer = new Customer(123, "Joe's Garage", date);

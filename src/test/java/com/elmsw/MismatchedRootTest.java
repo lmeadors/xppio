@@ -65,6 +65,38 @@ public class MismatchedRootTest extends AbstractTestBase {
 	}
 
 	@Test
+	public void shouldMapSuperclassProperties() throws Exception {
+
+		// setup test
+
+		final String xml = resourceAsString("samples/customer_with_account.xml");
+
+		final Account expectedAccount = new Account();
+		expectedAccount.setId(234);
+		expectedAccount.setName("Blah Sales");
+
+		final CustomerWithAccount expected = new CustomerWithAccount();
+		expected.setId(123);
+		expected.setName("Blah Inc.");
+		expected.setAccount(expectedAccount);
+
+		xppIO.addAlias("account", Account.class);
+		xppIO.addAlias("customer", CustomerWithAccount.class);
+
+		// run test
+		final CustomerWithAccount actual = xppIO.toObject(xml);
+
+		// verify behavior
+		System.out.println("*" + xppIO.toXml(expected));
+		System.out.println("*" + xppIO.toXml(actual));
+
+		assertPropertiesAreEqual(expected, actual, "account");
+		assertPropertiesAreEqual(expected.getAccount(), actual.getAccount());
+
+	}
+
+
+	@Test
 	public void shouldBeAbleToDoWeirdFragmentMapping() throws Exception {
 
 		// setup test
@@ -120,7 +152,7 @@ public class MismatchedRootTest extends AbstractTestBase {
 		// setup test
 		final String xml = resourceAsString("samples/embedded_order.xml");
 		List<LineItem> itemList = new LinkedList<LineItem>();
-		xppIO.addLocalAlias("lineItem", LineItem.class);
+		xppIO.addAlias("lineItem", LineItem.class);
 
 		// run test
 		xppIO.populate(itemList, xml, "/envelope/body/order/lineItemList");
