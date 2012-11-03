@@ -7,11 +7,13 @@ This project was created because all of the existing libraries to do it suck.
 
 This one probably sucks, too...just in a way that's more palatable for me.
 
+I hate the name.
+
 
 What's cool?
 ------
 * it's tiny: less than 200k including the dependencies (xpp3 and slf-api).
-* it's extensible: the main class is less than 200 lines of executable code, everything else can be replaced
+* it's extensible: the main class is less than 250 lines of executable code, everything else can be replaced
 * it doesn't explode if your xml has extra elements
 * it will map xml fragments into existing objects
 
@@ -30,19 +32,27 @@ Say this is your class:
 Here is what you do to create XML from that:
 
 	XppIO xppIO = new XppIO();
-	Customer customer = new Customer();
-	customer.setId(123);
-	customer.setName("Blah Industries");
-	String xml = xppIO.toXml(customer));
 
-Yep. That simple.
+	Customer expected = new Customer();
+	expected.setId(123);
+	expected.setName("Blah Industries");
+	expected.setEnabled(true);
 
-You want to create an object from that xml? Easy.
+	String xml = xppIO.toXml(expected);
 
-	String input = "<customer><id>123</id><name>Joe's Garage</name></customer>";
-	XppIO xppIO = new XppIO();
+Yep. It's that simple:
+
+	<customer>
+		<id>123</id>
+		<name>Blah Industries</name>
+		<enabled>true</enabled>
+	</customer>
+
+You want to create an object from that xml? Let's continue using that code above...
+
 	xppIO.addAlias("customer", Customer.class);
-	Customer customer = xppIO.toObject(input);
+	Customer actual = xppIO.toObject(xml);
+	assertPropertiesAreEqual(expected, actual);
 
 See the trick there? You do have to tell xppio that when it sees the <customer> element that it needs to create an
 instance of the Customer class. Acceptable for me, but what if you don't want to do that? What if your class is called
@@ -50,11 +60,11 @@ MyCustomerIsCoolerThanYours?
 
 Not a problem - using the same XML as the previous example, you can do this:
 
-	final MyCustomerIsCoolerThanYours actualCustomer = new MyCustomerIsCoolerThanYours();
-	xppIO.populate(actualCustomer, input, "/customer");
+	final MyCustomerIsCoolerThanYours coolCustomer = new MyCustomerIsCoolerThanYours();
+	xppIO.populate(coolCustomer, xml, "/customer");
 
-So, there, we're taking an existing object, and saying that starting at the /customer node of the XML data, it will map
-to a MyCustomerIsCoolerThanYours object.
+So, there, we take an existing object, and say that starting at the "/customer" node of the XML data, map it to an
+existing MyCustomerIsCoolerThanYours object.
 
 Now, what happens if you get the xml from someone and it has extra stuff in it? Like this:
 
@@ -164,7 +174,7 @@ What's missing?
 It might be nice to add annotations for aliases. That's a possible addition...but I'm not convinced that this is
 something the framework should do, because it's more of a configuration thing.
 
-Other collection types like Maps and Sets are not yet supported. I don't need them yet, so I didn't build the support.
+Other collection types like Sets are not yet supported. I don't need them yet, so I didn't build the support.
 That said, using an alias for your collection with populate() should work for classes that implement collection. I just
 haven't tested or tried it yet. Let me know.
 
@@ -172,12 +182,15 @@ The fragment mapping code needs to be optimized. I wanted to make it work and te
 it is better tested and proven to work, I'll revisit it and optimize it. It's currently O(m*n) but could be O(m+n) or
 better.
 
-Usage patterns - the code should all be threads safe, with the possible exception of the alias mapping - if you have a
+The reflection code could be optimized, it's doing field look ups every time instead of caching them. The question for
+me is do we want to save time or memory? Currently, we're favoring memory over time, which is acceptable.
+
+Usage patterns - the code should all be thread safe, with the possible exception of the alias mapping - if you have a
 thread adding aliases and other mapping stuff at the same time, things could get funny...but that's kind of a dumb idea
 if you think about it. I wouldn't recommend doing that at any rate. You should be able to use this as a singleton, but
-I think it's light enough that you don't really need to.
+I think it's light enough that you don't really need to. I wouldn't recommend it.
 
-More tests - cobertura tells me it's almost 100% tested, but that's only one measure. I'd like to get loads more tests
+More tests - cobertura tells me it's almost 100% tested, but that's only one measure. I'd like to get many more tests
 defined, but time is limited.
 
 The name sucks.

@@ -2,6 +2,7 @@ package com.elmsw;
 
 import com.elmsw.beans.Account;
 import com.elmsw.beans.Customer;
+import com.elmsw.beans.MyCustomerIsCoolerThanYours;
 import com.elmsw.core.converters.DateConverter;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -66,6 +67,28 @@ public class SimpleOutputTest extends AbstractTestBase {
 		// just for fun, we'll round-trip these, too
 		assertPropertiesAreEqual(expectedAccount, xppIO.<Account>toObject(actualAccountXml));
 		assertPropertiesAreEqual(expectedCustomer, xppIO.<Customer>toObject(actualCustomerXml));
+
+	}
+
+	@Test
+	public void demoFromReadme() throws Exception {
+
+		XppIO xppIO = new XppIO();
+
+		Customer expected = new Customer();
+		expected.setId(123);
+		expected.setName("Blah Industries");
+		expected.setEnabled(true);
+
+		String xml = xppIO.toXml(expected);
+
+		xppIO.addAlias("customer", Customer.class);
+		Customer actual = xppIO.toObject(xml);
+		assertPropertiesAreEqual(expected, actual);
+
+		final MyCustomerIsCoolerThanYours coolCustomer = new MyCustomerIsCoolerThanYours();
+		xppIO.populate(coolCustomer, xml, "/customer");
+		xppIO.toXml(coolCustomer);
 
 	}
 
