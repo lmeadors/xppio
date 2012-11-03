@@ -182,108 +182,134 @@ public class XppIO {
 	}
 
 	public <T> T populate(T target, Node xml, String start) {
+
 		try {
 
 			// clean up the document
 			xml.normalize();
 
+			// what are we mapping to?
 			final Class targetType = target.getClass();
 
-			final Node root;
+			final Node node;
+
+			// extract the part of the document we are going to map to the object
 			if (start != null) {
-				root = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
+				// extract the node to map using the xpath expression
+				node = (Node) xPathFactory.newXPath().compile(start).evaluate(xml, XPathConstants.NODE);
 			} else {
-				root = xml;
+				// no starting point, so we will map the entire node to the object
+				node = xml;
 			}
 
-			// if the target type is a collection, we need to get it's children, populate objects from them, and add
-			// them to the collection
 			if (Collection.class.isAssignableFrom(targetType)) {
-				log.debug("Type {} is a collection.", targetType);
-				NodeList list = root.getChildNodes();
-				final int nodeCount = list.getLength();
-				Collection<Object> targetCollection = (Collection<Object>) target;
 
-				for (int i = 0; i < nodeCount; i++) {
-					final String input = nodeToString(list.item(i)).trim();
-					// we can't map an empty string, don't be dumb here...
-					if (!input.isEmpty()) {
-						log.debug("adding {} to list", input);
-						targetCollection.add(toObject(input));
-					}
-				}
+				// the target type is a collection, so we need to get it's children, populate objects from them, and add
+				// them to the collection
+				mapNodeToCollection((Collection) target, targetType, node);
 
 			} else if (Map.class.isAssignableFrom(targetType)) {
+
 				// the assumption we make is that the Map when represented as xml will have a list of nodes. Each of
 				// those nodes will have 2 children - the first is the key, and the second the value
-				Map<Object, Object> map = (Map<Object, Object>) target;
-				final NodeList nodeList = root.getChildNodes();
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					final Node mapEntryNode = nodeList.item(i);
-					mapEntryNode.normalize();
-					log.debug("creating map entry from node:\n{}", nodeToString(mapEntryNode));
-					if (null != mapEntryNode.getChildNodes() && mapEntryNode.getChildNodes().getLength() > 2) {
-						// OK, there are 2 nodes so we need to get them and map them
-						final Node entryKeyNode = nonEmptyChild(mapEntryNode, 0);   // mapEntryNode.getChildNodes().item(0);
-						final Node entryValueNode = nonEmptyChild(mapEntryNode, 1); // mapEntryNode.getChildNodes().item(1);
-						final String keyXml = nodeToString(entryKeyNode).trim();
-						final String valueXml = nodeToString(entryValueNode).trim();
-						log.debug("mapping key from:\n{}", keyXml);
-						final Object key = toObject(keyXml);
-						log.debug("mapping value from:\n{}", valueXml);
-						final Object value = toObject(valueXml);
-						map.put(key, value);
-					}
-				}
-			} else {
-				// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It could be O(n+m) at least, maybe better.
-				// but it works for now...
-				final Field[] fields = getFields(targetType);
-				final NodeList nodeList = root.getChildNodes();
-				final int nodeCount = nodeList.getLength();
+				mapNodeToMap((Map) target, node);
 
-				for (Field field : fields) {
-					final String fieldName = field.getName();
-					log.debug("looking for a match for {}", fieldName);
-					for (int i = 0; i < nodeCount; i++) {
-						final Node node = nodeList.item(i);
-						final String nodeName = node.getNodeName();
-						log.debug("node name: {}", nodeName);
-						if (nodeName.equals(fieldName)) {
-							final Class fieldType = field.getType();
-							final int length = node.getChildNodes().getLength();
-							log.debug("node has {} children", length);
-							if (length < 2) {
-								final Converter converter = getConverterForClass(fieldType);
-								final String content = node.getTextContent();
-								log.debug("found a match, value is: {}", content);
-								log.debug("trying to use converter {} to set value", converter);
-								field.setAccessible(true);
-								field.set(target, converter.fromString(content));
-							} else {
-								log.debug("Node '{}' is a nested object of {}, we need to map it out if we can...",
-										new Object[]{
-												nodeToString(node),
-												fieldType
-										}
-								);
-								Object value = populate(
-										newInstance(fieldType, nodeName),
-										nodeToString(node),
-										"/" + nodeName
-								);
-								log.debug("value is {}", value);
-								field.setAccessible(true);
-								field.set(target, value);
-							}
-						}
-					}
-				}
+			} else {
+
+				// ok, it's not a collection or a map, so map the node to the object
+				mapNodeToObject(target, targetType, node);
+
 			}
+
 		} catch (Exception e) {
 			exceptionHandler.handle(e);
 		}
+
 		return target;
+
+	}
+
+	private <T> void mapNodeToObject(T target, Class targetType, Node root) throws Exception {
+
+		// todo: this can be optimized a LOT! it's O(n*m) now. Suck. It should be O(n+m) at least, maybe better.
+		// but it works for now...
+		final Field[] fields = getFields(targetType);
+		final NodeList nodeList = root.getChildNodes();
+		final int nodeCount = nodeList.getLength();
+
+		for (Field field : fields) {
+			final String fieldName = field.getName();
+			log.debug("looking for a match for {}", fieldName);
+			for (int i = 0; i < nodeCount; i++) {
+				final Node node = nodeList.item(i);
+				final String nodeName = node.getNodeName();
+				log.debug("node name: {}", nodeName);
+				if (nodeName.equals(fieldName)) {
+					final Class fieldType = field.getType();
+					final int length = node.getChildNodes().getLength();
+					log.debug("node has {} children", length);
+					if (length < 2) {
+						final Converter converter = getConverterForClass(fieldType);
+						final String content = node.getTextContent();
+						log.debug("found a match, value is: {}", content);
+						log.debug("trying to use converter {} to set value", converter);
+						field.setAccessible(true);
+						field.set(target, converter.fromString(content));
+					} else {
+						log.debug("Node '{}' is a nested object of {}, we need to map it out if we can...",
+								new Object[]{
+										nodeToString(node),
+										fieldType
+								}
+						);
+						Object value = populate(
+								newInstance(fieldType, nodeName),
+								nodeToString(node),
+								"/" + nodeName
+						);
+						log.debug("value is {}", value);
+						field.setAccessible(true);
+						field.set(target, value);
+					}
+				}
+			}
+		}
+	}
+
+	private void mapNodeToMap(Map<Object, Object> map, Node root) throws TransformerException {
+		final NodeList nodeList = root.getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			final Node mapEntryNode = nodeList.item(i);
+			mapEntryNode.normalize();
+			log.debug("creating map entry from node:\n{}", nodeToString(mapEntryNode));
+			if (null != mapEntryNode.getChildNodes() && mapEntryNode.getChildNodes().getLength() > 2) {
+				// OK, there are 2 nodes so we need to get them and map them
+				final Node entryKeyNode = nonEmptyChild(mapEntryNode, 0);   // mapEntryNode.getChildNodes().item(0);
+				final Node entryValueNode = nonEmptyChild(mapEntryNode, 1); // mapEntryNode.getChildNodes().item(1);
+				final String keyXml = nodeToString(entryKeyNode).trim();
+				final String valueXml = nodeToString(entryValueNode).trim();
+				log.debug("mapping key from:\n{}", keyXml);
+				final Object key = toObject(keyXml);
+				log.debug("mapping value from:\n{}", valueXml);
+				final Object value = toObject(valueXml);
+				map.put(key, value);
+			}
+		}
+	}
+
+	private void mapNodeToCollection(Collection<Object> collection, Class targetType, Node root) throws TransformerException {
+		log.debug("Type {} is a collection.", targetType);
+		NodeList list = root.getChildNodes();
+		final int nodeCount = list.getLength();
+
+		for (int i = 0; i < nodeCount; i++) {
+			final String input = nodeToString(list.item(i)).trim();
+			// we can't map an empty string, don't be dumb here...
+			if (!input.isEmpty()) {
+				log.debug("adding {} to list", input);
+				collection.add(toObject(input));
+			}
+		}
 	}
 
 	private Node nonEmptyChild(Node container, int skip) throws TransformerException {
@@ -314,10 +340,7 @@ public class XppIO {
 	}
 
 	private Object newInstance(final Class fieldType, String nodeName) throws Exception {
-
-		// try to find an alias - these take precedence
 		return typeForElement(nodeName, fieldType).newInstance();
-
 	}
 
 	private String nodeToString(Node node) throws TransformerException {
@@ -441,9 +464,12 @@ public class XppIO {
 
 		final Class nextType;
 
+		// try to find an alias...
 		if (aliasMap.containsKey(elementName)) {
+			// these take precedence
 			nextType = aliasMap.get(elementName);
 		} else {
+			// ok, i dunno, what do you think it is?
 			nextType = defaultType;
 		}
 
