@@ -13,17 +13,17 @@ public abstract class NoOpConverter<T> implements Converter<T> {
 	}
 
 	@Override
-	public Field[] getFields(Object object) {
+	public Field[] getFields(T object) {
 		return NO_FIELDS;
 	}
 
 	@Override
-	public String asText(Object object, XppIO xppIO) {
+	public String asText(T object, XppIO xppIO) {
 		return NOT_TEXT;
 	}
 
 	@Override
-	public String asXml(Object object, XppIO xppIO) {
+	public String asXml(T object, XppIO xppIO) {
 		return NOT_XML;
 	}
 
