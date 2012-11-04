@@ -1,13 +1,12 @@
 package com.elmsw.core.converters;
 
-import com.elmsw.Converter;
 import com.elmsw.XppIO;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateConverter extends NoOpConverter<Date> implements Converter<Date> {
+public class DateConverter extends NoOpConverter<Date> {
 
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.S z";
 

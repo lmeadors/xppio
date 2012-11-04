@@ -1,6 +1,5 @@
 package com.elmsw.core.converters;
 
-import com.elmsw.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ReflectionConverter extends NoOpConverter<Object> implements Converter<Object> {
+public class ReflectionConverter extends NoOpConverter<Object> {
 
 	private static final Logger log = LoggerFactory.getLogger(ReflectionConverter.class);
 

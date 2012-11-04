@@ -5,7 +5,7 @@ import com.elmsw.XppIO;
 
 import java.util.List;
 
-public class ListConverter extends NoOpConverter<List> implements Converter<List> {
+public class ListConverter extends NoOpConverter<List> {
 
 	public String asXml(List list, XppIO xppIO) {
 		StringBuilder returnValue = new StringBuilder("");
