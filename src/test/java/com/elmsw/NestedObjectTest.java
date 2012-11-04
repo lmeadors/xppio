@@ -27,7 +27,8 @@ public class NestedObjectTest extends AbstractTestBase {
 		xppIO.addAlias("customer", CustomerWithAccount.class);
 
 		// run test
-		final CustomerWithAccount customerWithAccount = xppIO.toObject(input);
+		final CustomerWithAccount customerWithAccount = xppIO.populate(new CustomerWithAccount(), input);
+//		final CustomerWithAccount customerWithAccount = xppIO.toObject(input);
 
 		// verify behavior
 		assertNotNull(customerWithAccount);
@@ -35,35 +36,43 @@ public class NestedObjectTest extends AbstractTestBase {
 	}
 
 	@Test
-	public void shouldReadChildObject() throws IOException, XmlPullParserException, IllegalAccessException, InstantiationException {
+	public void shouldReadChildObject() throws Exception {
 
 		// setup test
-		final String input = ACCOUNT_XML;
-		xppIO.addAlias("account", Account.class);
+		Account expected = new Account();
+		expected.setId(123);
+		expected.setName("Blah Sales");
 
 		// run test
-		final Account account = xppIO.toObject(input);
+		xppIO.addAlias("account", Account.class);
+		final Account actual = xppIO.populate(new Account(), ACCOUNT_XML);
 
 		// verify behavior
-		assertNotNull(account);
+		assertPropertiesAreEqual(expected, actual);
 
 	}
 
 	@Test
-	public void shouldReadObjectWithChildObject() throws IOException, XmlPullParserException, IllegalAccessException, InstantiationException {
+	public void shouldReadObjectWithChildObject() throws Exception {
 
 		// setup test
-		final String input = CUSTOMER_ACCOUNT_XML;
+		final Account expectedAccount = new Account();
+		expectedAccount.setId(123);
+		expectedAccount.setName("Blah Sales");
+		final CustomerWithAccount expected = new CustomerWithAccount();
+		expected.setAccount(expectedAccount);
+		expected.setId(123);
+		expected.setName("Blah Inc.");
+
+		// run test
 		xppIO.addAlias("customer", CustomerWithAccount.class);
 		xppIO.addAlias("account", Account.class);
-
-		// run test
-		log.debug(input);
-		final CustomerWithAccount customerWithAccount = xppIO.toObject(input);
+		final CustomerWithAccount actual = xppIO.populate(new CustomerWithAccount(), CUSTOMER_ACCOUNT_XML);
+//		final CustomerWithAccount actual = xppIO.toObject(CUSTOMER_ACCOUNT_XML);
 
 		// verify behavior
-		assertNotNull(customerWithAccount);
-		assertNotNull(customerWithAccount.getAccount());
+		assertPropertiesAreEqual(expected, actual, "account");
+		assertPropertiesAreEqual(expectedAccount, actual.getAccount());
 
 	}
 
@@ -77,7 +86,8 @@ public class NestedObjectTest extends AbstractTestBase {
 
 		// run test
 		log.debug(input);
-		final CustomerWithAccount customerWithAccount = xppIO.toObject(input);
+		final CustomerWithAccount customerWithAccount = xppIO.populate(new CustomerWithAccount(), input);
+//		final CustomerWithAccount customerWithAccount = xppIO.toObject(input);
 
 		// verify behavior
 		assertNotNull("Customer should have been created", customerWithAccount);

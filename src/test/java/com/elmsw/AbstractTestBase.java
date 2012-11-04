@@ -77,13 +77,13 @@ public abstract class AbstractTestBase {
 		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		final byte[] buffer = new byte[1024];
 		int read = inputStream.read(buffer);
-		while (read > 0){
+		while (read > 0) {
 			outputStream.write(buffer, 0, read);
 			read = inputStream.read(buffer);
 		}
 		outputStream.flush();
 		final String returnValue = new String(outputStream.toByteArray());
-		log.debug(returnValue);
+		log.trace(returnValue);
 		return returnValue;
 	}
 
@@ -91,4 +91,17 @@ public abstract class AbstractTestBase {
 		return new SimpleDateFormat(DateConverter.DEFAULT_DATE_FORMAT).parse(date);
 	}
 
+	protected class Timer {
+
+		private final long start;
+
+		public Timer() {
+			start = System.currentTimeMillis();
+		}
+
+		public long elapsed() {
+			return System.currentTimeMillis() - start;
+		}
+
+	}
 }

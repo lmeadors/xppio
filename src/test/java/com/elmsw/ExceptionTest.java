@@ -48,7 +48,8 @@ public class ExceptionTest {
 		XppIO xppIO = new XppIO(factory, exceptionHandler, namingStrategy, new SimpleStateFactory());
 
 		// run test
-		xppIO.toObject("<bomb/>");
+//		xppIO.toObject("<bomb/>");
+		xppIO.populate(new Customer(), "<bomb/>");
 
 		// verify behavior
 		fail("this should have exploded.");

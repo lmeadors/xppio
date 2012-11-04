@@ -84,6 +84,7 @@ public class XppIO {
 		);
 	}
 
+	@Deprecated
 	public <T> T toObject(Node node) {
 		T returnValue = null;
 		try {
@@ -94,6 +95,7 @@ public class XppIO {
 		return returnValue;
 	}
 
+	@Deprecated
 	public <T> T toObject(String input) {
 
 		final XmlPullParser xpp;
@@ -239,7 +241,7 @@ public class XppIO {
 
 		for (Field field : fields) {
 			final String fieldName = field.getName();
-			log.debug("looking for a match for {}", fieldName);
+			log.debug("looking for a match for field {}", fieldName);
 			for (int i = 0; i < nodeCount; i++) {
 				final Node node = nodeList.item(i);
 				final String nodeName = node.getNodeName();

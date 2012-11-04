@@ -84,7 +84,10 @@ public class MismatchedRootTest extends AbstractTestBase {
 		xppIO.addAlias("customer", CustomerWithAccount.class);
 
 		// run test
-		final CustomerWithAccount actual = xppIO.toObject(xml);
+		Timer timer = new Timer();
+		final CustomerWithAccount actual = xppIO.populate(new CustomerWithAccount(), xml);
+//		final CustomerWithAccount actual = xppIO.toObject(xml);
+		System.out.println("elapsed time: " + timer.elapsed());
 
 		// verify behavior
 		assertPropertiesAreEqual(expected, actual, "account");

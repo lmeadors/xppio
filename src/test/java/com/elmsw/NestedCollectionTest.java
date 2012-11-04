@@ -42,7 +42,10 @@ public class NestedCollectionTest extends AbstractTestBase {
 		xppIO.addAlias("order", Order.class);
 		xppIO.addAlias("lineItem", LineItem.class);
 		xppIO.addAlias("lineItemList", ArrayList.class);
-		final Order actualOrder = xppIO.toObject(xml);
+		Timer timer = new Timer();
+		final Order actualOrder = xppIO.populate(new Order(), xml);
+//		final Order actualOrder = xppIO.toObject(xml);
+		System.out.println("elapsed time: " + timer.elapsed());
 
 		assertNotNull(actualOrder);
 		assertPropertiesAreEqual(expectedOrder, actualOrder, "lineItemList");

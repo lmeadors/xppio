@@ -51,7 +51,7 @@ public class XmlTestHelper {
 	}
 
 	public Document stringToDocument(String source) throws Exception {
-		log.debug("creating document from : \n{}", source);
+//		log.debug("creating document from : \n{}", source);
 		return documentBuilder.parse(new ByteArrayInputStream(source.getBytes()));
 	}
 

@@ -1,5 +1,6 @@
 package com.elmsw;
 
+import com.elmsw.beans.StringCustomer;
 import com.elmsw.beans.TitleListItem;
 import org.junit.Test;
 
@@ -64,6 +65,7 @@ public class MapMappingTest extends AbstractTestBase {
 		xppIO.addAlias("string", String.class);
 
 		// run test
+//		final String output = xppIO.populate(, input);
 		final String output = xppIO.toObject(input);
 
 		// verify behavior
