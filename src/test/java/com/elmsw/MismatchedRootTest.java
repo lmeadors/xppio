@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,6 +80,7 @@ public class MismatchedRootTest extends AbstractTestBase {
 		expected.setDescription("yay me");
 		expected.setEnabled(true);
 		expected.setAccount(expectedAccount);
+		expected.setRating(new BigDecimal("12.34"));
 
 		xppIO.addAlias("account", Account.class);
 		xppIO.addAlias("customer", CustomerWithAccount.class);
