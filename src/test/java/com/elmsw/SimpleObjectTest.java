@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class SimpleObjectTest extends AbstractTestBase {
@@ -71,6 +72,7 @@ public class SimpleObjectTest extends AbstractTestBase {
 		final Customer expected = new Customer(123, "Blah Inc.");
 		expected.setDescription("yay me");
 		expected.setEnabled(true);
+		expected.setRating(new BigDecimal("12.34"));
 
 		// run test
 		final Customer actual = xppIO.populate(new Customer(), input);

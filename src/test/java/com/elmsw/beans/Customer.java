@@ -2,6 +2,7 @@ package com.elmsw.beans;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Customer {
@@ -11,6 +12,7 @@ public class Customer {
 	private String description;
 	private boolean enabled;
 	private Date created;
+	private BigDecimal rating;
 
 	public Customer() {
 	}
@@ -68,5 +70,13 @@ public class Customer {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	public BigDecimal getRating() {
+		return rating;
+	}
+
+	public void setRating(BigDecimal rating) {
+		this.rating = rating;
 	}
 }
