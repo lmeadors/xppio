@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class XppIO {
@@ -68,6 +69,7 @@ public class XppIO {
 
 		converterMap.put(String.class, new StringConverter());
 		converterMap.put(Integer.class, new IntegerConverter());
+		converterMap.put(BigDecimal.class, new BigDecimalConverter());
 		converterMap.put(Boolean.class, new BooleanConverter());
 		converterMap.put(boolean.class, new BooleanConverter());
 		converterMap.put(List.class, new ListConverter());
