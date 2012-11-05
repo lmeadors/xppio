@@ -1,0 +1,9 @@
+<message>
+	<status>ERROR</status>
+	<errors>
+		<error>
+			<field>libraryId</field>
+			<text>Library Id is a required field</text>
+		</error>
+	</errors>
+</message>

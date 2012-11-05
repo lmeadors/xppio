@@ -244,11 +244,13 @@ public class XppIO {
 			log.debug("looking for a match for field {}", fieldName);
 			for (int i = 0; i < nodeCount; i++) {
 				final Node node = nodeList.item(i);
+				node.normalize();
 				final String nodeName = node.getNodeName();
 				log.debug("node name: {}", nodeName);
 				if (nodeName.equals(fieldName)) {
 					final Class fieldType = field.getType();
-					final int length = node.getChildNodes().getLength();
+					final int length = getChildNodeCount(node);
+
 					log.debug("node has {} children", length);
 					if (length < 2) {
 						final Converter converter = getConverterForClass(fieldType);
@@ -276,6 +278,19 @@ public class XppIO {
 				}
 			}
 		}
+	}
+
+	private int getChildNodeCount(Node node) {
+		int length = 0;
+		if (null != node) {
+			final NodeList childNodes = node.getChildNodes();
+			length = childNodes.getLength();
+			for (int i = 0; i < length; i++) {
+				// check for sub-nodes
+				length += getChildNodeCount(childNodes.item(i));
+			}
+		}
+		return length;
 	}
 
 	private void mapNodeToMap(Map<Object, Object> map, Node root) throws TransformerException {
