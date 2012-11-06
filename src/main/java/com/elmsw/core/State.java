@@ -150,7 +150,7 @@ public class State {
 		try {
 			field = objectClass.getDeclaredField(name);
 		} catch (NoSuchFieldException e) {
-			exceptionHandler.handle(e);
+			log.debug("can't find field {}", name);
 		}
 
 		if (field == null) {
