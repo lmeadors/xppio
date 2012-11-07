@@ -74,6 +74,7 @@ public class XppIO {
 		converterMap.put(boolean.class, new BooleanConverter());
 		converterMap.put(List.class, new ListConverter());
 		converterMap.put(Date.class, new DateConverter());
+		converterMap.put(Long.class, new LongConverter());
 
 	}
 
