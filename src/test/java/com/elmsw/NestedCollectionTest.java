@@ -101,4 +101,29 @@ public class NestedCollectionTest extends AbstractTestBase {
 
 	}
 
+	private static final String ORDER_LIST_XML_FIXTURE = "<arrayList><order><id>1</id><lineItemList><lineItem><id>1</id><orderId>1</orderId><productId>2</productId><quantity>1</quantity></lineItem><lineItem><id>2</id><orderId>1</orderId><productId>3</productId><quantity>1</quantity></lineItem></lineItemList></order><order><id>2</id><lineItemList><lineItem><id>2</id><orderId>2</orderId><productId>3</productId><quantity>1</quantity></lineItem><lineItem><id>4</id><orderId>2</orderId><productId>4</productId><quantity>1</quantity></lineItem></lineItemList></order></arrayList>\n";
+
+	@Test
+	public void shouldParseOrderListFromXML() throws Exception {
+		final XppIO xppio = new XppIO();
+		xppio.addAlias("arrayList", ArrayList.class);
+		xppio.addAlias("order", Order.class);
+		xppio.addAlias("lineItemList", ArrayList.class);
+		xppio.addAlias("lineItem", LineItem.class);
+
+		final List<Order> orders = xppio.toObject(ORDER_LIST_XML_FIXTURE);
+
+		assertEquals(2, orders.size());
+		assertEquals(2, orders.get(0).getLineItemList().size());
+	}
+
+	private Order newOrder(int id) {
+		final Order order = new Order();
+		order.setId(id);
+		order.setLineItemList(new ArrayList<LineItem>());
+		order.getLineItemList().add(new LineItem(id * 1, id, id + 1, 1));
+		order.getLineItemList().add(new LineItem(id * 2, id, id + 2, 1));
+		return order;
+	}
+
 }

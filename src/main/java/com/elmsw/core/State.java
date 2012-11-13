@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.Collection;
 import java.util.Stack;
 
 public class State {
@@ -76,30 +76,35 @@ public class State {
 
 	private void setField(String propertyName, Object value, Object target) throws IllegalAccessException {
 
-
 		final Class targetClass = target.getClass();
 
-		final Field field;
-		try {
-			field = targetClass.getDeclaredField(propertyName);
+		final Field field = getField(targetClass, propertyName);
+
+		if (null != field) {
+
 			if (field.getType().isAssignableFrom(value.getClass())) {
+
 				field.setAccessible(true);
 				field.set(target, value);
+
 			}
-		} catch (NoSuchFieldException e) {
+
+		} else {
+
 			log.debug("field '{}' does not exist on {}", new Object[]{propertyName, targetClass});
+
 			// ok the field doesn't exist - is this a collection that we want to add an item to?
-			if (List.class.isAssignableFrom(targetClass)) {
-				log.debug("{} is a List", targetClass);
+			if (Collection.class.isAssignableFrom(targetClass)) {
+
+				log.debug("{} is a Collection", targetClass);
 				// oh, it's a list - add
-				List list = (List) target;
-				list.add(value);
+				((Collection) target).add(value);
+
 			} else {
-				log.debug("{} NOT is a List", targetClass);
-
+				log.debug("{} NOT is a Collection", targetClass);
 			}
-		}
 
+		}
 
 	}
 
